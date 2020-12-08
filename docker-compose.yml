@@ -1,0 +1,54 @@
+version: '3.3'
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    depends_on:
+      - discovery
+
+  rabbitmq:
+    image: "rabbitmq:3"
+
+  redis:
+    image: "redis:latest"
+
+  discovery:
+    image: "consul:1.8"
+    environment:
+      - CONSUL_LOCAL_CONFIG={"log_level":"info"}
+
+  postgres-auth:
+    image: "postgres:10"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+
+  postgres-trips:
+    image: "postgres:10"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - redis
+      - postgres-auth
+      - rabbitmq
+
+  trips:
+    build:
+      context: ./trip
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - discovery
+      - postgres-trips
+      - rabbitmq
