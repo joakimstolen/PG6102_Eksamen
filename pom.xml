@@ -13,7 +13,8 @@
         <module>trip-dto</module>
         <module>trip</module>
 		<module>user-collections</module>
-	</modules>
+        <module>e2e-tests</module>
+    </modules>
 	<name>eksamen</name>
 	<description>Eksamen PG6102 Enterprise Programmering 2</description>
 	<packaging>pom</packaging>
