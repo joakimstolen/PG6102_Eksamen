@@ -94,4 +94,49 @@ class RestIT {
                 }
     }
 
+
+    @Test
+    fun testCreateUser() {
+        Awaitility.await().atMost(120, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofSeconds(10))
+                .ignoreExceptions()
+                .until {
+
+                    val id = "foo_testCreateUser_" + System.currentTimeMillis()
+
+                    RestAssured.given().get("/api/user-collections/$id")
+                            .then()
+                            .statusCode(401)
+
+
+                    val password = "123456"
+
+                    val cookie = RestAssured.given().contentType(ContentType.JSON)
+                            .body("""
+                                {
+                                    "userId": "$id",
+                                    "password": "$password"
+                                }
+                            """.trimIndent())
+                            .post("/api/auth/signUp")
+                            .then()
+                            .statusCode(201)
+                            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
+                            .extract().cookie("SESSION")
+
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .put("/api/user-collections/$id")
+//                            .then()
+                    //could be 400 if AMQP already registered it
+//                            .statusCode(201)
+
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .get("/api/user-collections/$id")
+                            .then()
+                            .statusCode(200)
+
+                    true
+                }
+    }
+
 }
