@@ -115,7 +115,7 @@ internal class UserServiceTest{
 
 
     @Test
-    fun testCancelTrip(){
+    fun testAlterTrip(){
 
         val userId = "foo"
         val tripId = "t01"
@@ -128,15 +128,14 @@ internal class UserServiceTest{
 
         userService.registerNewUser(userId)
         userService.bookTrip(userId, tripId, nrOfPeople)
-
         val between = userService.findByIdEager(userId)!!
-        val n = between.ownedBookedTrips.sumBy { it.numberOfTrips }
-        userService.cancelTrip(userId, between.ownedBookedTrips[0].tripId!!)
+        assertEquals(between.nrOfPersons, nrOfPeople)
 
+        val newNrOfPeople = 10
+        userService.alterTrip(userId, tripId, newNrOfPeople)
 
         val after = userService.findByIdEager(userId)!!
-        //assertTrue(after.coins > coins)
-        assertEquals(n-1, after.ownedBookedTrips.sumBy { it.numberOfTrips })
+        assertEquals(after.nrOfPersons, newNrOfPeople)
     }
 
 
