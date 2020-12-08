@@ -60,7 +60,17 @@ services:
       - auth
       - rabbitmq
 
-  trips:
+  trips_0:
+    build:
+      context: ./trip
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - discovery
+      - postgres-trips
+      - rabbitmq
+
+  trips_1:
     build:
       context: ./trip
       dockerfile: Dockerfile

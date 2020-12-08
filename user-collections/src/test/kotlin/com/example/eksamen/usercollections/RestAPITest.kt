@@ -138,6 +138,7 @@ internal class RestAPITest{
 
         val user = userService.findByIdEager(userId)!!
         assertTrue(user.ownedBookedTrips.any { it.tripId == tripId })
+        assertTrue(user.ownedBookedTrips.any { it.numberOfPeopleBooked == nrOfPeople })
     }
 
 
