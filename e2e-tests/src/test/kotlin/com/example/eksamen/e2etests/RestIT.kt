@@ -43,6 +43,8 @@ class RestIT {
                 .withLocalCompose(true)
 
 
+
+
         @BeforeAll
         @JvmStatic
         fun waitForServers() {
