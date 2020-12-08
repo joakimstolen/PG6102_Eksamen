@@ -123,17 +123,21 @@ internal class UserServiceTest{
 
         userService.registerNewUser(userId)
 
+        //checking that there is no persons before trip is booked
         val before = userRepository.findById(userId).get()
-        val coins = before.coins
+        assertEquals(before.nrOfPersons, 0)
 
         userService.registerNewUser(userId)
         userService.bookTrip(userId, tripId, nrOfPeople)
+
+        //checking if the correct amount of people is registered after the trip is booked
         val between = userService.findByIdEager(userId)!!
         assertEquals(between.nrOfPersons, nrOfPeople)
 
         val newNrOfPeople = 10
         userService.alterTrip(userId, tripId, newNrOfPeople)
 
+        //Checking if the altered amount of people is registered after the trip has been altered
         val after = userService.findByIdEager(userId)!!
         assertEquals(after.nrOfPersons, newNrOfPeople)
     }
