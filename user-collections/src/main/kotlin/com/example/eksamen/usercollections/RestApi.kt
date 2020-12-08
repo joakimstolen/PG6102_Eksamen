@@ -86,6 +86,16 @@ class RestAPI(
             return RestResponseFactory.payload(200, PatchResultDto())
         }
 
+
+        if(dto.command == Command.ALTER_TRIP){
+            try{
+                userService.alterTrip(userId, tripId, nrOfPersons)
+            } catch (e: IllegalArgumentException){
+                return RestResponseFactory.userFailure(e.message ?: "Failed to alter trip $tripId")
+            }
+            return RestResponseFactory.payload(200, PatchResultDto())
+        }
+
         return RestResponseFactory.userFailure("Unrecognized command: ${dto.command}")
     }
 

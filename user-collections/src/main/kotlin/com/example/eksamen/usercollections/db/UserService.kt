@@ -115,8 +115,22 @@ class UserService(
 
         copy.numberOfTrips--
 
-        val millValue = bookedTripService.sellValue(tripId)
-        user.coins += millValue
+        val cancelValue = bookedTripService.sellValue(tripId)
+        user.coins += cancelValue
+    }
+
+    fun alterTrip(userId: String, tripId: String, nrOfPeople: Int) {
+        validate(userId, tripId)
+
+        val user = userRepository.lockedFind(userId)!!
+
+        val copy = user.ownedBookedTrips.find { it.tripId == tripId }
+        if(copy == null || copy.numberOfTrips == 0){
+            throw IllegalArgumentException("User $userId does not own this $tripId")
+        }
+
+        user.nrOfPersons = nrOfPeople
+
     }
 
 

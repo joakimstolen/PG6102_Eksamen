@@ -178,4 +178,50 @@ internal class RestAPITest{
         assertEquals(n - 1, after.ownedBookedTrips.sumBy { it.numberOfTrips })
     }
 
+
+    @Test
+    fun testAlterTripPersons() {
+
+        val userId = "foo"
+        val tripIdToBuy = "t01"
+        val nrOfPeople = 5
+
+        given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
+
+        val before = userRepository.findById(userId).get()
+        val beforePersons = before.nrOfPersons
+
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
+                .body(PatchUserDto(Command.BOOK_TRIP, tripIdToBuy, nrOfPeople))
+                .patch("/$userId")
+                .then()
+                .statusCode(200)
+
+        val between = userService.findByIdEager(userId)!!
+        val betweenPersons = between.nrOfPersons
+        assertTrue(betweenPersons == nrOfPeople)
+
+        val newNrOfPeople = 8
+
+
+        //val tripId = between.ownedBookedTrips[0].tripId!!
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
+                .body(PatchUserDto(Command.ALTER_TRIP, tripIdToBuy, newNrOfPeople))
+                .patch("/$userId")
+                .then()
+                .statusCode(200)
+
+        //Checking ig number of persons booked is equals the altered amount of people booked
+        val after = userService.findByIdEager(userId)!!
+        assertTrue(after.nrOfPersons == newNrOfPeople)
+
+        //checking if the trip is the correct one
+        val tripId = between.ownedBookedTrips[0].tripId!!
+        assertEquals(tripId, tripIdToBuy)
+
+
+    }
+
 }
