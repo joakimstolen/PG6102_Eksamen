@@ -10,3 +10,7 @@ spring:
   cloud:
     consul:
       enabled: false
+  session:
+    store-type: none
+  main:
+    allow-bean-definition-overriding: true

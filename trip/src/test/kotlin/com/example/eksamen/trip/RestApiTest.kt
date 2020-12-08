@@ -48,7 +48,7 @@ internal class RestApiTest {
     @Test
     fun testGetPage() {
 
-        RestAssured.given().accept(ContentType.JSON)
+        RestAssured.given().auth().basic("foo", "123").accept(ContentType.JSON)
                 .get("/api/trips")
                 .then()
                 .statusCode(200)
@@ -60,7 +60,8 @@ internal class RestApiTest {
     fun testUpdateTrip(){
         val tripId = "foo"
 
-        val id = RestAssured.given().accept(ContentType.JSON)
+
+        val id = RestAssured.given().auth().basic("admin", "admin").accept(ContentType.JSON)
                 .put("/api/trips/$tripId")
                 .then()
                 .statusCode(201)
@@ -75,7 +76,7 @@ internal class RestApiTest {
 
         tripService.registerNewTrip(tripId)
 
-        val id = RestAssured.given().accept(ContentType.JSON)
+        val id = RestAssured.given().auth().basic("admin", "admin").accept(ContentType.JSON)
                 .get("/api/trips/$tripId")
                 .then()
                 .statusCode(200)
@@ -87,7 +88,7 @@ internal class RestApiTest {
     fun testPostTrip(){
         val tripId = "bar"
 
-        val id = RestAssured.given().accept(ContentType.JSON)
+        val id = RestAssured.given().auth().basic("admin", "admin").accept(ContentType.JSON)
                 .post("/api/trips/$tripId")
                 .then()
                 .statusCode(201)
@@ -101,7 +102,7 @@ internal class RestApiTest {
     fun testDeleteMovie(){
         val tripId = "foo"
 
-        val id = RestAssured.given().accept(ContentType.JSON)
+        val id = RestAssured.given().auth().basic("admin", "admin").accept(ContentType.JSON)
                 .put("/api/trips/$tripId")
                 .then()
                 .statusCode(201)
@@ -109,11 +110,11 @@ internal class RestApiTest {
         assertTrue(tripRepository.existsById(tripId))
 
 
-        RestAssured.delete("/api/trips/$tripId").then().statusCode(204)
+        RestAssured.given().auth().basic("admin", "admin").delete("/api/trips/$tripId").then().statusCode(204)
 
         RestAssured.get().then().body("id", CoreMatchers.not(CoreMatchers.containsString(tripId)))
 
-        RestAssured.delete("/api/trips/$tripId").then().statusCode(404)
+        RestAssured.given().auth().basic("admin", "admin").delete("/api/trips/$tripId").then().statusCode(404)
 
 
     }
@@ -167,7 +168,7 @@ internal class RestApiTest {
 
     @Test
     fun testGetCollection(){
-        RestAssured.given().get("/api/trips/collection_$LATEST")
+        RestAssured.given().auth().basic("foo", "123").get("/api/trips/collection_$LATEST")
                 .then()
                 .statusCode(200)
                 .body("data.trips.size", Matchers.greaterThan(6))

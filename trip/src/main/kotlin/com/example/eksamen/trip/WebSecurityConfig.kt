@@ -1,19 +1,14 @@
-package com.example.eksamen.usercollections
+package com.example.eksamen.trip
 
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UserDetails
-
 
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig: WebSecurityConfigurerAdapter() {
-
 
     override fun configure(http: HttpSecurity) {
 
@@ -21,36 +16,28 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 .exceptionHandling().authenticationEntryPoint {req,response,e ->
                     response.setHeader("WWW-Authenticate","cookie")
                     response.sendError(401)
-                }.and()
+                }
+                .and()
                 .authorizeRequests()
-                .antMatchers("/swagger*/**", "/v3/api-docs", "/actuator/**").permitAll()
-                .antMatchers("/api/user-collections/{id}")
-                .access("hasRole('USER') and @userSecurity.checkId(authentication, #id)")
+                .antMatchers("/api/trips").permitAll()
+                .antMatchers("/api/trips/collection_*").permitAll()
+                .antMatchers("/api/trips/{tripId}").hasRole("ADMIN")
+                //
+                //.antMatchers("/trips/{tripId}")
+                /*
+                    the "#" resolves the variable in the path, "{id}" in this case.
+                    the "@" resolves a current bean.
+                  */
+                //.access("hasRole('USER') and @userSecurity.checkId(authentication, #id)")
+                //
                 .anyRequest().denyAll()
                 .and()
                 .csrf().disable()
                 .sessionManagement()
+                //never create a session, but use existing one if provided
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-
     }
 
-    @Bean
-    fun userSecurity() : UserSecurity {
-        return UserSecurity()
-    }
-}
 
-//To check if user only can access his own data, and not the other users
-class UserSecurity{
 
-    fun checkId(authentication: Authentication, id: String) : Boolean{
-
-        if(authentication.principal !is UserDetails){
-            return false
-        }
-
-        val current = (authentication.principal as UserDetails).username
-
-        return current == id
-    }
 }
