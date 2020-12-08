@@ -19,16 +19,15 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 }
                 .and()
                 .authorizeRequests()
+
+                //everyone can see the list of trips
                 .antMatchers("/api/trips").permitAll()
                 .antMatchers("/api/trips/collection_*").permitAll()
+
+                //only admins can do modifying of trips
                 .antMatchers("/api/trips/{tripId}").hasRole("ADMIN")
                 //
-                //.antMatchers("/trips/{tripId}")
-                /*
-                    the "#" resolves the variable in the path, "{id}" in this case.
-                    the "@" resolves a current bean.
-                  */
-                //.access("hasRole('USER') and @userSecurity.checkId(authentication, #id)")
+
                 //
                 .anyRequest().denyAll()
                 .and()
