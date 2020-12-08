@@ -1,5 +1,6 @@
 package com.example.eksamen.trip
 
+import com.example.eksamen.trip.RestApi.Companion.LATEST
 import com.example.eksamen.trip.service.TripRepository
 import com.example.eksamen.trip.service.TripService
 import com.example.eksamen.utils.response.PageDto
@@ -7,6 +8,7 @@ import io.restassured.RestAssured
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -160,6 +162,15 @@ internal class RestApiTest {
                 assertTrue(aid > bid)
             }
         }
+    }
+
+
+    @Test
+    fun testGetCollection(){
+        RestAssured.given().get("/api/trips/collection_$LATEST")
+                .then()
+                .statusCode(200)
+                .body("data.trips.size", Matchers.greaterThan(6))
     }
 
 }
