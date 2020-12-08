@@ -20,3 +20,7 @@ spring:
           uri: lb://trips-service
           predicates:
             - Path=/api/trips/**
+        - id: User-Collections
+          uri: lb://user-collections-service
+          predicates:
+            - Path=/api/user-collections/**
