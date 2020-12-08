@@ -20,6 +20,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 .and()
                 .authorizeRequests()
 
+                .antMatchers("/swagger*/**", "/v3/api-docs", "/actuator/**").permitAll()
                 //everyone can see the list of trips
                 .antMatchers("/api/trips").permitAll()
                 .antMatchers("/api/trips/collection_*").permitAll()

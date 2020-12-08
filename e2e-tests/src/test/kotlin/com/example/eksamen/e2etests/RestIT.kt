@@ -71,7 +71,7 @@ class RestIT {
                 .pollInterval(Duration.ofSeconds(10))
                 .ignoreExceptions()
                 .until {
-                    RestAssured.given().get("/api/trips/collection_v1_000")
+                    RestAssured.given().auth().basic("foo","123").get("/api/trips/collection_v1_000")
                             .then()
                             .statusCode(200)
                             .body("data.trips.size", Matchers.greaterThan(10))
@@ -171,6 +171,63 @@ class RestIT {
                 .statusCode(403)
     }
 
+
+    @Test
+    fun testAMQPSignUp() {
+        Awaitility.await().atMost(120, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofSeconds(10))
+                .ignoreExceptions()
+                .until {
+
+                    val id = "foo_testCreateUser_" + System.currentTimeMillis()
+
+                    RestAssured.given().get("/api/auth/user")
+                            .then()
+                            .statusCode(401)
+
+                    RestAssured.given().put("/api/user-collections/$id")
+                            .then()
+                            .statusCode(401)
+
+
+
+                    val password = "123456"
+
+                    val cookie = RestAssured.given().contentType(ContentType.JSON)
+                            .body("""
+                                {
+                                    "userId": "$id",
+                                    "password": "$password"
+                                }
+                            """.trimIndent())
+                            .post("/api/auth/signUp")
+                            .then()
+                            .statusCode(201)
+                            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
+                            .extract().cookie("SESSION")
+
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .get("/api/auth/user")
+                            .then()
+                            .statusCode(200)
+
+                    Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                            .pollInterval(Duration.ofSeconds(2))
+                            .ignoreExceptions()
+                            .until {
+                                RestAssured.given().cookie("SESSION", cookie)
+                                        .get("/api/user-collections/$id")
+                                        .then()
+                                        .statusCode(200)
+
+
+
+                                true
+                            }
+
+                    true
+                }
+    }
 
 
 
