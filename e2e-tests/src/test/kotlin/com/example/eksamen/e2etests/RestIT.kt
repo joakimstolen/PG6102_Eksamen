@@ -139,4 +139,39 @@ class RestIT {
                 }
     }
 
+
+    @Test
+    fun testUserCollectionAccessControl() {
+
+        val alice = "alice_testUserCollectionAccessControl_" + System.currentTimeMillis()
+        val eve =   "eve_testUserCollectionAccessControl_" + System.currentTimeMillis()
+
+        RestAssured.given().get("/api/user-collections/$alice").then().statusCode(401)
+        RestAssured.given().put("/api/user-collections/$alice").then().statusCode(401)
+        RestAssured.given().patch("/api/user-collections/$alice").then().statusCode(401)
+
+        val cookie = RestAssured.given().contentType(ContentType.JSON)
+                .body("""
+                                {
+                                    "userId": "$eve",
+                                    "password": "123456"
+                                }
+                            """.trimIndent())
+                .post("/api/auth/signUp")
+                .then()
+                .statusCode(201)
+                .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
+                .extract().cookie("SESSION")
+
+
+
+        RestAssured.given().cookie("SESSION", cookie)
+                .get("/api/user-collections/$alice")
+                .then()
+                .statusCode(403)
+    }
+
+
+
+
 }
