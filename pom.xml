@@ -11,6 +11,7 @@
 		<module>auth</module>
         <module>api-gateway</module>
         <module>trip-dto</module>
+        <module>trip</module>
     </modules>
 	<name>eksamen</name>
 	<description>Eksamen PG6102 Enterprise Programmering 2</description>
