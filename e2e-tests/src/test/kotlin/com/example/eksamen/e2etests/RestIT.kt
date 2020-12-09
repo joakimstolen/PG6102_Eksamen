@@ -189,16 +189,19 @@ class RestIT {
                 .ignoreExceptions()
                 .until {
 
+                    //ADMIN role username
                     val id = "admin"
-                    val tripId = "trip123" + System.currentTimeMillis()
+                    val tripId = "tripToPostAndDelete"
 
+                    //Checking if access if not logged in
                     RestAssured.given().get("/api/user-collections/$id")
                             .then()
                             .statusCode(401)
 
-
+                    //ADMIN role password
                     val password = "admin"
 
+                    //Logging in to an existing user with ADMIN permissions
                     val cookie = RestAssured.given().contentType(ContentType.JSON)
                             .body("""
                                 {
@@ -212,6 +215,7 @@ class RestIT {
                             .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
                             .extract().cookie("SESSION")
 
+                    //Checking if user was logged in
                     RestAssured.given().cookie("SESSION", cookie)
                             .get("/api/auth/user")
                             .then()
@@ -223,6 +227,7 @@ class RestIT {
                             .then()
                             .statusCode(200)
 
+                    //Posting a trip with the ADMIN user
                     RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
                             .post("/api/trips/$tripId")
                             .then()
@@ -230,7 +235,11 @@ class RestIT {
 
 
 
-
+                    //Deleting a trip with the ADMIN user
+                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
+                            .delete("/api/trips/$tripId")
+                            .then()
+                            .statusCode(204)
 //
 //
 //
