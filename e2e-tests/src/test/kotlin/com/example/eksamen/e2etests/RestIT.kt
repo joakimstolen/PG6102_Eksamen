@@ -1,7 +1,6 @@
 package com.example.eksamen.e2etests
 
 
-
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
@@ -25,8 +24,6 @@ import java.util.concurrent.TimeUnit
 class RestIT {
 
 
-
-
     companion object {
 
         init {
@@ -46,8 +43,6 @@ class RestIT {
                 .withLogConsumer("user-collections") { print("[USER_COLLECTIONS] " + it.utf8String) }
                 //.withLogConsumer("scores") { print("[SCORES] " + it.utf8String) }
                 .withLocalCompose(true)
-
-
 
 
         @BeforeAll
@@ -73,14 +68,13 @@ class RestIT {
     }
 
 
-
     @Test
     fun testGetTripsCollection() {
         Awaitility.await().atMost(120, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofSeconds(10))
                 .ignoreExceptions()
                 .until {
-                    RestAssured.given().auth().basic("foo","123").get("/api/trips/collection_v1_000")
+                    RestAssured.given().auth().basic("foo", "123").get("/api/trips/collection_v1_000")
                             .then()
                             .statusCode(200)
                             .body("data.trips.size", Matchers.greaterThan(10))
@@ -153,7 +147,7 @@ class RestIT {
     fun testUserCollectionAccessControl() {
 
         val alice = "alice_testUserCollectionAccessControl_" + System.currentTimeMillis()
-        val eve =   "eve_testUserCollectionAccessControl_" + System.currentTimeMillis()
+        val eve = "eve_testUserCollectionAccessControl_" + System.currentTimeMillis()
 
         RestAssured.given().get("/api/user-collections/$alice").then().statusCode(401)
         RestAssured.given().put("/api/user-collections/$alice").then().statusCode(401)
@@ -181,7 +175,6 @@ class RestIT {
     }
 
 
-
     @Test
     fun testAMQP() {
         Awaitility.await().atMost(60, TimeUnit.SECONDS)
@@ -191,7 +184,7 @@ class RestIT {
 
                     //ADMIN role username
                     val id = "admin"
-                    val tripId = "tripToPostAndDelete"
+                    val tripId = "tripToPostAndDeletee"
 
                     //Checking if access if not logged in
                     RestAssured.given().get("/api/user-collections/$id")
@@ -220,7 +213,8 @@ class RestIT {
                             .get("/api/auth/user")
                             .then()
                             .statusCode(200)
-                            //.body("roles", Matchers.contains("ROLE_ADMIN"))
+                    //.body("roles", Matchers.contains("ROLE_ADMIN"))
+
 
                     RestAssured.given().cookie("SESSION", cookie)
                             .get("/api/trips/collection_v1_000")
@@ -233,13 +227,45 @@ class RestIT {
                             .then()
                             .statusCode(201)
 
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .put("/api/user-collections/$id")
+
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .get("/api/user-collections/$id")
+                            .then()
+                            .statusCode(200)
+
+//                    val userId = "foo_testCreateUser_" + System.currentTimeMillis()
+//
+//                    val userPassword = "123456"
+//
+//                    val userCookie = RestAssured.given().contentType(ContentType.JSON)
+//                            .body("""
+//                                        {
+//                                            "userId": "$userId",
+//                                            "password": "$userPassword"
+//                                        }
+//                                        """.trimIndent())
+//                            .post("/api/auth/signUp")
+//                            .then()
+//                            .statusCode(201)
+//                            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
+//                            .extract().cookie("SESSION2")
+//
+//                    RestAssured.given().cookie("SESSION2", userCookie)
+//                            .get("/api/auth/user")
+//                            .then()
+//                            .statusCode(200)
+
+
 
 
                     //Deleting a trip with the ADMIN user
-                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
-                            .delete("/api/trips/$tripId")
-                            .then()
-                            .statusCode(204)
+//                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
+//                            .delete("/api/trips/$tripId")
+//                            .then()
+//                            .statusCode(204)
+
 //
 //
 //
@@ -253,8 +279,65 @@ class RestIT {
     }
 
 
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+/*
+
+
+Awaitility.await().atMost(10, TimeUnit.SECONDS)
+.pollInterval(Duration.ofSeconds(2))
+.ignoreExceptions()
+.until {
+
+    val userId = "foo_testCreateUser_" + System.currentTimeMillis()
+
+    val userPassword = "123456"
+
+    val userCookie = RestAssured.given().contentType(ContentType.JSON)
+            .body("""
+                                        {
+                                            "userId": "$userId",
+                                            "password": "$userPassword"
+                                        }
+                                        """.trimIndent())
+            .post("/api/auth/signUp")
+            .then()
+            .statusCode(201)
+            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
+            .extract().cookie("SESSION2")
+
+    RestAssured.given().cookie("SESSION2", userCookie)
+            .get("/api/auth/user")
+            .then()
+            .statusCode(200)
+
+
+    RestAssured.given().cookie("SESSION2", userCookie).contentType(ContentType.JSON)
+            .body("""
+                                        {
+                                            "command": "BOOK_TRIP",
+                                            "tripId": "$tripId",
+                                            "nrOfPersons": "3"
+                                        }
+                                        """.trimIndent())
+            .patch("/api/user-collections/$userId")
+            .then()
+            .statusCode(200)
+
+    RestAssured.given().cookie("SESSION2", userCookie)
+            .get("/api/user-collections/$userId")
+            .then()
+            .statusCode(200)
+
+
+
+    true
+}*/
