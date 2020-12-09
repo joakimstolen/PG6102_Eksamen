@@ -16,11 +16,9 @@ class MOMListener(
 
 
     @RabbitListener(queues = ["#{queue.name}"])
-    fun receiveFromAMQP(userId: String) {
+    fun receiveFromAMQP(userId: String, tripId: String) {
 
-        val ok = userService.registerNewUser(userId)
-        if(ok){
-            log.info("Registered new user via MOM: $userId")
-        }
+        userService.markAsCanceled(userId, tripId)
+        log.info("Canceled trip via MOM: $userId")
     }
 }

@@ -34,6 +34,11 @@ class Application {
     }
 
     @Bean
+    fun tripFanout(): FanoutExchange {
+        return FanoutExchange("trip-creation")
+    }
+
+    @Bean
     fun fanout(): FanoutExchange {
         return FanoutExchange("user-creation")
     }

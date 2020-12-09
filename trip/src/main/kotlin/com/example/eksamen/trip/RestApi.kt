@@ -11,6 +11,8 @@ import com.example.eksamen.utils.response.WrappedResponse
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,7 +25,9 @@ import java.util.concurrent.TimeUnit
 @RestController
 class RestApi(
         private val tripRepository: TripRepository,
-        private val tripService: TripService
+        private val tripService: TripService,
+        private val rabbit: RabbitTemplate,
+        private val fanout: FanoutExchange
 ){
 
     companion object{
@@ -69,8 +73,13 @@ class RestApi(
     @PostMapping(path = ["/{tripId}"])
     fun createMovie(@PathVariable("tripId") tripId: String) : ResponseEntity<WrappedResponse<Void>> {
         val ok = tripService.registerNewTrip(tripId)
-        return if(!ok) RestResponseFactory.userFailure("Trip $tripId already exists")
-        else RestResponseFactory.noPayload(201)
+        return if(!ok){
+             RestResponseFactory.userFailure("Trip $tripId already exists")
+        } else {
+            //AMQP send tripId when created
+            rabbit.convertAndSend(fanout.name, "", tripId)
+            RestResponseFactory.noPayload(201)
+        }
     }
 
 
@@ -116,6 +125,7 @@ class RestApi(
             return ResponseEntity.status(404).build()
         }
 
+        rabbit.convertAndSend(fanout.name, "", tripId)
         tripRepository.deleteById(id)
         return ResponseEntity.status(204).build()
 

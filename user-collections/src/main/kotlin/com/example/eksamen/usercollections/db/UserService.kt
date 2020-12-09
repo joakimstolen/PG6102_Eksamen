@@ -87,7 +87,6 @@ class UserService(
 
         user.nrOfPersons += nrOfPeople
 
-
         addTrip(user, tripId, nrOfPeople)
     }
 
@@ -130,6 +129,17 @@ class UserService(
         }
 
         user.nrOfPersons = nrOfPeople
+
+    }
+
+    fun markAsCanceled(userId: String, tripId: String){
+        validate(userId, tripId)
+
+        val user = userRepository.lockedFind(userId)!!
+        val copy = user.ownedBookedTrips.find { it.tripId == tripId }
+        if (copy != null) {
+            copy.tripId = "CANCELED"
+        }
 
     }
 

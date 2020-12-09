@@ -1,5 +1,6 @@
 package com.example.eksamen.auth
 
+import com.example.eksamen.auth.db.UserService
 import org.springframework.amqp.core.FanoutExchange
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -9,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @SpringBootApplication
 class Application{
+
+
 
 
     @Bean

@@ -6,7 +6,10 @@ spring:
   application:
     name: trips-service
   session:
-    store-type: none
+    store-type: redis
+  redis:
+    host: redis
+    port: 6379
   rabbitmq:
     host: rabbitmq
   datasource:

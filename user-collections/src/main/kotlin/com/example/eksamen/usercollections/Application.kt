@@ -42,10 +42,16 @@ class Application {
                 .build()
     }
 
+//    @Bean
+//    fun fanout(): FanoutExchange {
+//        return FanoutExchange("user-creation")
+//        //fetches the user fanout
+//    }
+
     @Bean
     fun fanout(): FanoutExchange {
-        return FanoutExchange("user-creation")
-        //fetches the auth fanout
+        return FanoutExchange("trip-creation")
+        //fetches the trip fanout
     }
 
 
@@ -59,8 +65,10 @@ class Application {
     @Bean
     fun queue(): Queue {
         //making a queue
-        return Queue("user-creation-user-collections")
+        return Queue("trip-creation-user-collections")
     }
+
+
 
     @Bean
     fun binding(fanout: FanoutExchange,
@@ -68,6 +76,8 @@ class Application {
         //binding the queue to the auths fanout
         return BindingBuilder.bind(queue).to(fanout)
     }
+
+
 
 }
 

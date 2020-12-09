@@ -1,5 +1,7 @@
 package com.example.eksamen.e2etests
 
+
+
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
@@ -8,6 +10,7 @@ import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.testcontainers.containers.DockerComposeContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
@@ -20,6 +23,8 @@ import java.util.concurrent.TimeUnit
 @Disabled
 @Testcontainers
 class RestIT {
+
+
 
 
     companion object {
@@ -63,8 +68,10 @@ class RestIT {
 
                         true
                     }
+
         }
     }
+
 
 
     @Test
@@ -174,26 +181,23 @@ class RestIT {
     }
 
 
+
     @Test
-    fun testAMQPSignUp() {
-        Awaitility.await().atMost(120, TimeUnit.SECONDS)
+    fun testAMQP() {
+        Awaitility.await().atMost(60, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofSeconds(10))
                 .ignoreExceptions()
                 .until {
 
-                    val id = "foo_testCreateUser_" + System.currentTimeMillis()
+                    val id = "admin"
+                    val tripId = "trip123" + System.currentTimeMillis()
 
-                    RestAssured.given().get("/api/auth/user")
+                    RestAssured.given().get("/api/user-collections/$id")
                             .then()
                             .statusCode(401)
 
-                    RestAssured.given().put("/api/user-collections/$id")
-                            .then()
-                            .statusCode(401)
 
-
-
-                    val password = "123456"
+                    val password = "admin"
 
                     val cookie = RestAssured.given().contentType(ContentType.JSON)
                             .body("""
@@ -202,9 +206,9 @@ class RestIT {
                                     "password": "$password"
                                 }
                             """.trimIndent())
-                            .post("/api/auth/signUp")
+                            .post("/api/auth/login")
                             .then()
-                            .statusCode(201)
+                            .statusCode(204)
                             .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
                             .extract().cookie("SESSION")
 
@@ -212,24 +216,35 @@ class RestIT {
                             .get("/api/auth/user")
                             .then()
                             .statusCode(200)
+                            //.body("roles", Matchers.contains("ROLE_ADMIN"))
 
-                    Awaitility.await().atMost(10, TimeUnit.SECONDS)
-                            .pollInterval(Duration.ofSeconds(2))
-                            .ignoreExceptions()
-                            .until {
-                                RestAssured.given().cookie("SESSION", cookie)
-                                        .get("/api/user-collections/$id")
-                                        .then()
-                                        .statusCode(200)
+                    RestAssured.given().cookie("SESSION", cookie)
+                            .get("/api/trips/collection_v1_000")
+                            .then()
+                            .statusCode(200)
+
+                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
+                            .post("/api/trips/$tripId")
+                            .then()
+                            .statusCode(201)
 
 
 
-                                true
-                            }
+
+//
+//
+//
+//                    RestAssured.given().cookie("SESSION", cookie)
+//                            .patch("/api/user-collections/newTrip")
+//                            .then()
+//                            .statusCode(200)
 
                     true
                 }
     }
+
+
+
 
 
 
