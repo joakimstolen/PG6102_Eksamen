@@ -121,7 +121,7 @@ class RestAPI(
 
 
         val numberOfTrips : Int = dto.numberOfTrips!!
-//
+
 
         userService.bookTrip(userId, tripId, nrOfPersons)
 

@@ -1,6 +1,7 @@
 package com.example.eksamen.usercollections
 
 import com.example.eksamen.trip.dto.TripCollectionDto
+import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.db.BookedTrip
 import com.example.eksamen.usercollections.model.Collection
 import com.example.eksamen.usercollections.model.Trip
@@ -46,47 +47,54 @@ class BookedTripService(
         cb = circuitBreakerFactory.create("circuitBreakerToTrips")
     }
 
-    private fun verifyCollection(){
+//    fun verifyCollection(){
+//
+//        if(collection == null){
+//            fetchData()
+//            log.info(collection)
+//
+//            if(collection == null){
+//                throw IllegalStateException("No collection info")
+//            }
+//        }
+//    }
 
-        fetchData()
-
-        isInitialized()
-    }
 
 
-    protected fun fetchData(){
+    fun fetchData(tripId: String): TripDto?{
 
-        val version = "v1_000"
+        //val version = "v1_000"
         val uri = UriComponentsBuilder
-                .fromUriString("http://${tripServiceAddress.trim()}/api/trips/collection_$version")
+                .fromUriString("http://${tripServiceAddress.trim()}/api/trips/${tripId}")
                 .build().toUri()
 
-        val response = cb.run(
+        return cb.run(
                 {
                     client.exchange(
                             uri,
                             HttpMethod.GET,
                             null,
-                            object : ParameterizedTypeReference<WrappedResponse<TripCollectionDto>>() {})
+                            object : ParameterizedTypeReference<WrappedResponse<TripDto>>() {}).body?.data
 
                 },
                 { e ->
                     log.error("Failed to fetch data from Trips Service: ${e.message}")
                     null
                 }
-        )?: return
+        )
 
 
-        if (response.statusCodeValue != 200) {
-            log.error("Error in fetching data from Trips Service. Status ${response.statusCodeValue}." +
-                    "Message: " + response.body.message)
-        }
-
-        try {
-            collection = Collection(response.body.data!!)
-        } catch (e: Exception) {
-            log.error("Failed to parse trip collection info: ${e.message}")
-        }
+//        if (response.statusCodeValue != 200) {
+//            log.error("Error in fetching data from Trips Service. Status ${response.statusCodeValue}." +
+//                    "Message: " + response.body.message)
+//        }
+//
+//        try {
+//            collection = Collection(response.body.data!!)
+//            log.info(Collection(response.body.data!!).toString())
+//        } catch (e: Exception) {
+//            log.error("Failed to parse trip collection info: ${e.message}")
+//        }
     }
 
     fun isInitialized() = tripCollection.isNotEmpty()
@@ -94,7 +102,7 @@ class BookedTripService(
 
 
     fun sellValue(tripId: String) : Int {
-        verifyCollection()
+        //verifyCollection()
         val trip : Trip = tripCollection.find { it.tripId  == tripId} ?:
         throw IllegalArgumentException("Invalid tripId $tripId")
 
@@ -102,7 +110,7 @@ class BookedTripService(
     }
 
     fun price(tripId: String) : Int {
-        verifyCollection()
+        //verifyCollection()
         val trip : Trip = tripCollection.find { it.tripId  == tripId} ?:
         throw IllegalArgumentException("Invalid tripId $tripId")
 

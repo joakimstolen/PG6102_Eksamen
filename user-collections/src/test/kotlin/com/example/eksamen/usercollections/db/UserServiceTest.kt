@@ -1,5 +1,6 @@
 package com.example.eksamen.usercollections.db
 
+import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.BookedTripService
 import com.example.eksamen.usercollections.FakeData
 import com.example.eksamen.usercollections.model.Collection
@@ -22,9 +23,10 @@ import org.springframework.web.client.RestTemplate
 @Service
 class FakeCardService : BookedTripService(RestTemplate(), Resilience4JCircuitBreakerFactory()){
 
-    override fun fetchData() {
+    override fun fetchData(tripId: String): TripDto? {
         val dto = FakeData.getCollectionDto()
         super.collection = Collection(dto)
+        return null
     }
 }
 

@@ -79,17 +79,19 @@ class UserService(
 
 
     fun bookTrip(userId: String, tripId: String, nrOfPeople: Int)  {
-        validate(userId, tripId)
+        //validate(userId, tripId)
 
-        val price = bookedTripService.price(tripId)
+        bookedTripService.fetchData(tripId)
+
+        //val price = bookedTripService.price(tripId)
         val user = userRepository.lockedFind(userId)!!
 
 
-        if (user.coins < price) {
-            throw IllegalArgumentException("Not enough coins")
-        }
+        //if (user.coins < price) {
+        //    throw IllegalArgumentException("Not enough coins")
+       // }
 
-        user.coins -= price
+        //user.coins -= price
 
         user.nrOfPersons += nrOfPeople
 
