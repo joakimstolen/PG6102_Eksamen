@@ -1,3 +1,6 @@
+//https://www.journaldev.com/21429/spring-component
+//
+
 package com.example.eksamen.auth
 
 import com.example.eksamen.auth.db.UserRepository

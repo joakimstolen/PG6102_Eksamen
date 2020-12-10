@@ -75,20 +75,20 @@ internal class UserServiceTest{
         assertTrue(user.ownedBookedTrips.any { it.tripId == tripId})
     }
 
-    @Test
-    fun testBuyTripFailNotEnoughMoney(){
-
-        val userId = "foo"
-        val tripId = "t04"
-        val nrOfPeople = 3
-
-        userService.registerNewUser(userId)
-
-        val e = assertThrows(IllegalArgumentException::class.java){
-            userService.bookTrip(userId, tripId, nrOfPeople)
-        }
-        assertTrue(e.message!!.contains("coin"), "Wrong error message: ${e.message}")
-    }
+//    @Test
+//    fun testBuyTripFailNotEnoughMoney(){
+//
+//        val userId = "foo"
+//        val tripId = "t04"
+//        val nrOfPeople = 3
+//
+//        userService.registerNewUser(userId)
+//
+//        val e = assertThrows(IllegalArgumentException::class.java){
+//            userService.bookTrip(userId, tripId, nrOfPeople)
+//        }
+//        assertTrue(e.message!!.contains("coin"), "Wrong error message: ${e.message}")
+//    }
 
     @Test
     fun testCancelTrip(){

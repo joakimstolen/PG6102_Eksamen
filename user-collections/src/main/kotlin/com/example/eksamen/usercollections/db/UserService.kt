@@ -112,7 +112,7 @@ class UserService(
     }
 
     fun cancelTrip(userId: String, tripId: String) {
-        validate(userId, tripId)
+        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
 
@@ -123,12 +123,10 @@ class UserService(
 
         copy.numberOfTrips--
 
-        val cancelValue = bookedTripService.sellValue(tripId)
-        user.coins += cancelValue
     }
 
     fun alterTrip(userId: String, tripId: String, nrOfPeople: Int) {
-        validate(userId, tripId)
+        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
 
@@ -142,7 +140,7 @@ class UserService(
     }
 
     fun markAsCanceled(userId: String, tripId: String){
-        validate(userId, tripId)
+        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
         val copy = user.ownedBookedTrips.find { it.tripId == tripId }

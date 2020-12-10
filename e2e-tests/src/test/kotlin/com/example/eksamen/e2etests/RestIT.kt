@@ -237,16 +237,13 @@ class RestIT {
 
 
 
-//                    val postData = ObjectMapper().createObjectNode()
-//                            .put("command", "BOOK_TRIP")
-//                            .put("tripId", tripId)
-//                            .put("nrOfPersons", 2)
+                    val postData = ObjectMapper().createObjectNode()
+                            .put("tripId", tripId)
+                            .put("numberOfPeopleBooked", 2)
+                            .put("numberOfTrips", 1)
 //
                     RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
-                            .body("""
-                                    {"tripId":"testAMQP", "place":"Colosseum", "costPerson":5 }
-                                """.trimIndent()
-                            )
+                            .body(postData)
                             .post("/api/user-collections/$id")
                             .then()
                             .statusCode(201)
