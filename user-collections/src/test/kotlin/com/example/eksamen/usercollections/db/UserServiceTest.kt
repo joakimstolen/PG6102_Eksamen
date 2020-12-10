@@ -115,19 +115,19 @@ internal class UserServiceTest{
         assertFalse(userService.registerNewUser(id))
     }
 
-    @Test
-    fun testBuyTrip(){
-
-        val userId = "foo"
-        val tripId = "t002"
-        val nrOfPeople = 3
-
-        userService.registerNewUser(userId)
-        userService.bookTrip(userId, tripId, nrOfPeople)
-
-        val user = userService.findByIdEager(userId)!!
-        assertTrue(user.ownedBookedTrips.any { it.tripId == tripId})
-    }
+//    @Test
+//    fun testBuyTrip(){
+//
+//        val userId = "foo"
+//        val tripId = "t002"
+//        val nrOfPeople = 3
+//
+//        userService.registerNewUser(userId)
+//        userService.bookTrip(userId, tripId, nrOfPeople)
+//
+//        val user = userService.findByIdEager(userId)!!
+//        assertTrue(user.ownedBookedTrips.any { it.tripId == tripId})
+//    }
 
 //    @Test
 //    fun testBuyTripFailNotEnoughMoney(){
@@ -144,59 +144,59 @@ internal class UserServiceTest{
 //        assertTrue(e.message!!.contains("coin"), "Wrong error message: ${e.message}")
 //    }
 
-    @Test
-    fun testCancelTrip(){
+//    @Test
+//    fun testCancelTrip(){
+//
+//        val userId = "foo"
+//        val tripId = "t002"
+//        val nrOfPeople = 4
+//
+//        userService.registerNewUser(userId)
+//
+//        val before = userRepository.findById(userId).get()
+//        val coins = before.coins
+//
+//        userService.registerNewUser(userId)
+//        userService.bookTrip(userId, tripId, nrOfPeople)
+//
+//        val between = userService.findByIdEager(userId)!!
+//        val n = between.ownedBookedTrips.sumBy { it.numberOfTrips }
+//        userService.cancelTrip(userId, between.ownedBookedTrips[0].tripId!!)
+//
+//
+//        val after = userService.findByIdEager(userId)!!
+//        //assertTrue(after.coins > coins)
+//        assertEquals(n-1, after.ownedBookedTrips.sumBy { it.numberOfTrips })
+//    }
 
-        val userId = "foo"
-        val tripId = "t002"
-        val nrOfPeople = 4
 
-        userService.registerNewUser(userId)
-
-        val before = userRepository.findById(userId).get()
-        val coins = before.coins
-
-        userService.registerNewUser(userId)
-        userService.bookTrip(userId, tripId, nrOfPeople)
-
-        val between = userService.findByIdEager(userId)!!
-        val n = between.ownedBookedTrips.sumBy { it.numberOfTrips }
-        userService.cancelTrip(userId, between.ownedBookedTrips[0].tripId!!)
-
-
-        val after = userService.findByIdEager(userId)!!
-        //assertTrue(after.coins > coins)
-        assertEquals(n-1, after.ownedBookedTrips.sumBy { it.numberOfTrips })
-    }
-
-
-    @Test
-    fun testAlterTrip(){
-
-        val userId = "foo"
-        val tripId = "t002"
-        val nrOfPeople = 4
-
-        userService.registerNewUser(userId)
-
-        //checking that there is no persons before trip is booked
-        val before = userRepository.findById(userId).get()
-        assertEquals(before.nrOfPersons, 0)
-
-        userService.registerNewUser(userId)
-        userService.bookTrip(userId, tripId, nrOfPeople)
-
-        //checking if the correct amount of people is registered after the trip is booked
-        val between = userService.findByIdEager(userId)!!
-        assertEquals(between.nrOfPersons, nrOfPeople)
-
-        val newNrOfPeople = 10
-        userService.alterTrip(userId, tripId, newNrOfPeople)
-
-        //Checking if the altered amount of people is registered after the trip has been altered
-        val after = userService.findByIdEager(userId)!!
-        assertEquals(after.nrOfPersons, newNrOfPeople)
-    }
+//    @Test
+//    fun testAlterTrip(){
+//
+//        val userId = "foo"
+//        val tripId = "t002"
+//        val nrOfPeople = 4
+//
+//        userService.registerNewUser(userId)
+//
+//        //checking that there is no persons before trip is booked
+//        val before = userRepository.findById(userId).get()
+//        assertEquals(before.nrOfPersons, 0)
+//
+//        userService.registerNewUser(userId)
+//        userService.bookTrip(userId, tripId, nrOfPeople)
+//
+//        //checking if the correct amount of people is registered after the trip is booked
+//        val between = userService.findByIdEager(userId)!!
+//        assertEquals(between.nrOfPersons, nrOfPeople)
+//
+//        val newNrOfPeople = 10
+//        userService.alterTrip(userId, tripId, newNrOfPeople)
+//
+//        //Checking if the altered amount of people is registered after the trip has been altered
+//        val after = userService.findByIdEager(userId)!!
+//        assertEquals(after.nrOfPersons, newNrOfPeople)
+//    }
 
 
 }

@@ -28,9 +28,7 @@ class UserService(
         private val bookedTripService: BookedTripService
 ) {
 
-    companion object{
-        private val log = LoggerFactory.getLogger(UserService::class.java)
-    }
+
 
     fun findByIdEager(userId: String) : User?{
 
@@ -53,28 +51,6 @@ class UserService(
         user.coins = 100
         userRepository.save(user)
         return true
-    }
-
-
-    private fun validateTrip(tripId: String) {
-//        if (!bookedTripService.isInitialized()) {
-//            throw IllegalStateException("Booked trip service is not initialized")
-//        }
-
-        if (!bookedTripService.tripCollection.any { it.tripId == tripId }) {
-            throw IllegalArgumentException("Invalid tripId: $tripId")
-        }
-    }
-
-    private fun validateUser(userId: String) {
-        if (!userRepository.existsById(userId)) {
-            throw IllegalArgumentException("User $userId does not exist")
-        }
-    }
-
-    private fun validate(userId: String, tripId: String) {
-        validateUser(userId)
-        validateTrip(tripId)
     }
 
 
@@ -112,7 +88,6 @@ class UserService(
     }
 
     fun cancelTrip(userId: String, tripId: String) {
-        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
 
@@ -126,7 +101,6 @@ class UserService(
     }
 
     fun alterTrip(userId: String, tripId: String, nrOfPeople: Int) {
-        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
 
@@ -140,7 +114,6 @@ class UserService(
     }
 
     fun markAsCanceled(userId: String, tripId: String){
-        //validate(userId, tripId)
 
         val user = userRepository.lockedFind(userId)!!
         val copy = user.ownedBookedTrips.find { it.tripId == tripId }
