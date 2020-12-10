@@ -120,7 +120,8 @@ class RestAPI(
 
 
 
-        val numberOfTrips : Int = dto.numberOfTrips!!
+        val numberOfTrips : Int = dto.numberOfTrips
+                ?: return RestResponseFactory.userFailure("Missing nr of trips")
 
 
         userService.bookTrip(userId, tripId, nrOfPersons)

@@ -1,8 +1,8 @@
 package com.example.eksamen.usercollections.db
 
+import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.BookedTripService
 import org.slf4j.LoggerFactory
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -57,9 +57,9 @@ class UserService(
 
 
     private fun validateTrip(tripId: String) {
-        if (!bookedTripService.isInitialized()) {
-            throw IllegalStateException("Booked trip service is not initialized")
-        }
+//        if (!bookedTripService.isInitialized()) {
+//            throw IllegalStateException("Booked trip service is not initialized")
+//        }
 
         if (!bookedTripService.tripCollection.any { it.tripId == tripId }) {
             throw IllegalArgumentException("Invalid tripId: $tripId")
@@ -72,35 +72,35 @@ class UserService(
         }
     }
 
-    private fun validate(userId: String, cardId: String) {
+    private fun validate(userId: String, tripId: String) {
         validateUser(userId)
-        validateTrip(cardId)
+        validateTrip(tripId)
     }
 
 
     fun bookTrip(userId: String, tripId: String, nrOfPeople: Int)  {
-        //validate(userId, tripId)
 
-        bookedTripService.fetchData(tripId)
+        //checking if trip exists in trips api
+        val fetchTripId: TripDto? = bookedTripService.fetchData(tripId)
+
+        val tripIdFromFetch = fetchTripId?.tripId
+
 
         //val price = bookedTripService.price(tripId)
         val user = userRepository.lockedFind(userId)!!
 
-
-        //if (user.coins < price) {
-        //    throw IllegalArgumentException("Not enough coins")
-       // }
 
         //user.coins -= price
 
         user.nrOfPersons += nrOfPeople
 
 
-        addTrip(user, tripId, nrOfPeople)
+        //sending user, tripId from the trip api and nr of people to be booked
+        addTrip(user, tripIdFromFetch, nrOfPeople)
     }
 
 
-    private fun addTrip(user: User, tripId: String, nrOfPeople: Int) {
+    private fun addTrip(user: User, tripId: String?, nrOfPeople: Int) {
         user.ownedBookedTrips.find { it.tripId == tripId }
                 ?.apply { numberOfTrips++ }
                 ?: BookedTrip().apply {
