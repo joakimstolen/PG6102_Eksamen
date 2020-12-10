@@ -40,21 +40,19 @@ class BookedTripService(
     private lateinit var cb: CircuitBreaker
 
 
+
     @PostConstruct
     fun init(){
-
         cb = circuitBreakerFactory.create("circuitBreakerToTrips")
-
-        synchronized(lock){
-            if(tripCollection.isNotEmpty()){
-                return
-            }
-            fetchData()
-        }
     }
 
+    private fun verifyCollection(){
 
-    fun isInitialized() = tripCollection.isNotEmpty()
+        fetchData()
+
+        isInitialized()
+    }
+
 
     protected fun fetchData(){
 
@@ -70,12 +68,13 @@ class BookedTripService(
                             HttpMethod.GET,
                             null,
                             object : ParameterizedTypeReference<WrappedResponse<TripCollectionDto>>() {})
+
                 },
                 { e ->
                     log.error("Failed to fetch data from Trips Service: ${e.message}")
                     null
                 }
-        ) ?: return
+        )?: return
 
 
         if (response.statusCodeValue != 200) {
@@ -90,16 +89,9 @@ class BookedTripService(
         }
     }
 
-    private fun verifyCollection(){
+    fun isInitialized() = tripCollection.isNotEmpty()
 
-        if(collection == null){
-            fetchData()
 
-            if(collection == null){
-                throw IllegalStateException("No collection info")
-            }
-        }
-    }
 
     fun sellValue(tripId: String) : Int {
         verifyCollection()

@@ -28,6 +28,7 @@ class TripService (private var tripRepository: TripRepository, val em : EntityMa
         return true
     }
 
+
     fun getNextPage(size: Int, keysetId: String? = null, keysetPrice: Int? = null): List<TripEntity>{
         if(size < 1 || size > 1000){
             throw IllegalArgumentException("Invalid size value: $size")

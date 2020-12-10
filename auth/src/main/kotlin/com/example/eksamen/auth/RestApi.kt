@@ -36,7 +36,8 @@ class RestApi(
         return ResponseEntity.ok(map)
     }
 
-    @PostMapping(path = ["/signUp"],
+    @PostMapping(
+            path = ["/signUp"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun signUp(@RequestBody dto: AuthDto)
             : ResponseEntity<Void> {

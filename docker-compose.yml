@@ -49,24 +49,15 @@ services:
       - postgres-auth
       - rabbitmq
 
-  user-collections:
-    build:
-      context: ./user-collections
-      dockerfile: Dockerfile
-    depends_on:
-      - api-gateway
-      - discovery
-      - postgres-user-collections
-      - auth
-      - rabbitmq
+
 
   trips_0:
     build:
       context: ./trip
       dockerfile: Dockerfile
     depends_on:
-      - api-gateway
       - discovery
+      - api-gateway
       - postgres-trips
       - rabbitmq
       - redis
@@ -76,8 +67,21 @@ services:
       context: ./trip
       dockerfile: Dockerfile
     depends_on:
+      - discovery
+      - api-gateway
+      - postgres-trips
+      - rabbitmq
+      - redis
+
+
+  user-collections:
+    build:
+      context: ./user-collections
+      dockerfile: Dockerfile
+    depends_on:
       - api-gateway
       - discovery
-      - postgres-trips
+      - postgres-user-collections
+      - auth
       - rabbitmq
       - redis

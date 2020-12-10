@@ -2,6 +2,7 @@ package com.example.eksamen.usercollections
 
 import com.example.eksamen.usercollections.db.UserRepository
 import com.example.eksamen.usercollections.db.UserService
+import com.example.eksamen.usercollections.dto.BookedTripDto
 import com.example.eksamen.usercollections.dto.Command
 import com.example.eksamen.usercollections.dto.PatchUserDto
 import com.example.eksamen.utils.response.WrappedResponse
@@ -131,10 +132,10 @@ internal class RestAPITest{
 
         given().auth().basic(userId, "123")
                 .contentType(ContentType.JSON)
-                .body(PatchUserDto(Command.BOOK_TRIP, tripId, nrOfPeople))
-                .patch("/$userId")
+                .body(BookedTripDto(tripId, nrOfPeople, 1))
+                .post("/$userId")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
 
         val user = userService.findByIdEager(userId)!!
         assertTrue(user.ownedBookedTrips.any { it.tripId == tripId })
@@ -156,10 +157,10 @@ internal class RestAPITest{
 
         given().auth().basic(userId, "123")
                 .contentType(ContentType.JSON)
-                .body(PatchUserDto(Command.BOOK_TRIP, tripIdToBuy, nrOfPeople))
-                .patch("/$userId")
+                .body(BookedTripDto(tripIdToBuy, nrOfPeople, 1))
+                .post("/$userId")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
 
         val between = userService.findByIdEager(userId)!!
         val n = between.ownedBookedTrips.sumBy { it.numberOfTrips }
@@ -193,10 +194,10 @@ internal class RestAPITest{
 
         given().auth().basic(userId, "123")
                 .contentType(ContentType.JSON)
-                .body(PatchUserDto(Command.BOOK_TRIP, tripIdToBuy, nrOfPeople))
-                .patch("/$userId")
+                .body(BookedTripDto(tripIdToBuy, nrOfPeople, 1))
+                .post("/$userId")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
 
         val between = userService.findByIdEager(userId)!!
         val betweenPersons = between.nrOfPersons

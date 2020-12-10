@@ -12,8 +12,11 @@ import springfox.documentation.service.ApiInfo
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import org.springframework.amqp.core.Queue
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient
+
 
 @SpringBootApplication(scanBasePackages = ["com.example.eksamen"])
+@EnableDiscoveryClient
 class Application {
 
     @Bean

@@ -1,6 +1,7 @@
 package com.example.eksamen.e2etests
 
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
@@ -9,7 +10,6 @@ import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.testcontainers.containers.DockerComposeContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
@@ -234,6 +234,24 @@ class RestIT {
                             .get("/api/user-collections/$id")
                             .then()
                             .statusCode(200)
+
+
+
+//                    val postData = ObjectMapper().createObjectNode()
+//                            .put("command", "BOOK_TRIP")
+//                            .put("tripId", tripId)
+//                            .put("nrOfPersons", 2)
+//
+                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
+                            .body("""
+                                    {"tripId":"testAMQP", "place":"Colosseum", "costPerson":5 }
+                                """.trimIndent()
+                            )
+                            .post("/api/user-collections/$id")
+                            .then()
+                            .statusCode(201)
+
+
 
 //                    val userId = "foo_testCreateUser_" + System.currentTimeMillis()
 //

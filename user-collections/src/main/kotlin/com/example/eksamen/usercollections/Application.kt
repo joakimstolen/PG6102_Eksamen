@@ -1,11 +1,17 @@
 package com.example.eksamen.usercollections
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig
+import io.github.resilience4j.timelimiter.TimeLimiterConfig
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.core.Queue
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder
+import org.springframework.cloud.client.circuitbreaker.Customizer
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestTemplate
@@ -14,8 +20,10 @@ import springfox.documentation.builders.PathSelectors
 import springfox.documentation.service.ApiInfo
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
+import java.time.Duration
 
 @SpringBootApplication(scanBasePackages = ["com.example.eksamen"])
+@EnableDiscoveryClient
 class Application {
 
     @LoadBalanced
@@ -23,6 +31,7 @@ class Application {
     fun loadBalancedClient() : RestTemplate {
         return RestTemplate()
     }
+
 
     @Bean
     fun swaggerApi() : Docket {

@@ -209,7 +209,7 @@ internal class RestApiTest {
         RestAssured.given().get("/api/trips/collection_$LATEST")
                 .then()
                 .statusCode(200)
-                .body("data.trips.size", Matchers.greaterThan(6))
+                .body("data.trips.size", Matchers.greaterThan(2))
     }
 
 }

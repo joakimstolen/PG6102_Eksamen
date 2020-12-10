@@ -1,6 +1,8 @@
 package com.example.eksamen.usercollections.db
 
 import com.example.eksamen.usercollections.BookedTripService
+import org.slf4j.LoggerFactory
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -25,6 +27,10 @@ class UserService(
         private val userRepository: UserRepository,
         private val bookedTripService: BookedTripService
 ) {
+
+    companion object{
+        private val log = LoggerFactory.getLogger(UserService::class.java)
+    }
 
     fun findByIdEager(userId: String) : User?{
 
@@ -72,7 +78,7 @@ class UserService(
     }
 
 
-    fun bookTrip(userId: String, tripId: String, nrOfPeople: Int) {
+    fun bookTrip(userId: String, tripId: String, nrOfPeople: Int)  {
         validate(userId, tripId)
 
         val price = bookedTripService.price(tripId)
@@ -86,6 +92,7 @@ class UserService(
         user.coins -= price
 
         user.nrOfPersons += nrOfPeople
+
 
         addTrip(user, tripId, nrOfPeople)
     }

@@ -1,18 +1,20 @@
 package com.example.eksamen.usercollections
 
 import com.example.eksamen.usercollections.db.UserService
-import com.example.eksamen.usercollections.dto.Command
-import com.example.eksamen.usercollections.dto.PatchResultDto
-import com.example.eksamen.usercollections.dto.PatchUserDto
-import com.example.eksamen.usercollections.dto.UserDto
+import com.example.eksamen.usercollections.dto.*
 import com.example.eksamen.utils.response.RestResponseFactory
 import com.example.eksamen.utils.response.WrappedResponse
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.RestTemplate
 import java.lang.IllegalArgumentException
+
+
 
 @Api(value = "/api/user-collections", description = "Operations on card collections owned by users")
 @RequestMapping(
@@ -68,14 +70,14 @@ class RestAPI(
         val nrOfPersons = dto.nrOfPersons
                 ?: return RestResponseFactory.userFailure("Missing nr of persons")
 
-        if(dto.command == Command.BOOK_TRIP){
-            try{
-                userService.bookTrip(userId, tripId, nrOfPersons)
-            } catch (e: IllegalArgumentException){
-                return RestResponseFactory.userFailure(e.message ?: "Failed to buy trip $tripId")
-            }
-            return RestResponseFactory.payload(200, PatchResultDto())
-        }
+//        if(dto.command == Command.BOOK_TRIP){
+//            try{
+//                userService.bookTrip(userId, tripId, nrOfPersons)
+//            } catch (e: IllegalArgumentException){
+//                return RestResponseFactory.userFailure(e.message ?: "Failed to buy trip $tripId")
+//            }
+//            return RestResponseFactory.payload(200, PatchResultDto())
+//        }
 
         if(dto.command == Command.CANCEL_TRIP){
             try{
@@ -99,4 +101,50 @@ class RestAPI(
         return RestResponseFactory.userFailure("Unrecognized command: ${dto.command}")
     }
 
+
+    @ApiOperation("Book trip")
+    @PostMapping(
+            path = ["/{userId}"],
+            consumes = [(MediaType.APPLICATION_JSON_VALUE)]
+    )
+    fun bookTrip(
+            @PathVariable("userId") userId: String,
+            @RequestBody dto: BookedTripDto
+    ): ResponseEntity<WrappedResponse<BookedTripDto>>{
+
+        val tripId = dto.tripId
+                ?: return RestResponseFactory.userFailure("Missing trip id")
+
+        val nrOfPersons = dto.numberOfPeopleBooked
+                ?: return RestResponseFactory.userFailure("Missing nr of persons")
+
+
+
+        val numberOfTrips : Int = dto.numberOfTrips!!
+//
+
+        userService.bookTrip(userId, tripId, nrOfPersons)
+
+
+
+        return RestResponseFactory.payload(201, BookedTripDto())
+
+//        val tripId = dto.tripId
+//                ?: return RestResponseFactory.userFailure("Missing trip id")
+//
+//        val nrOfPersons = dto.numberOfPeopleBooked
+//                ?: return RestResponseFactory.userFailure("Missing nr of persons")
+//
+//        val numberOfTrips = dto.numberOfTrips
+//                ?: return RestResponseFactory.userFailure("Missing nr of trips")
+
+//
+//            try{
+//                userService.bookTrip(userId, tripId, nrOfPersons)
+//            } catch (e: IllegalArgumentException){
+//                return RestResponseFactory.userFailure(e.message ?: "Failed to buy trip $tripId")
+//            }
+//            return ResponseEntity.status(201).build()
+
+    }
 }

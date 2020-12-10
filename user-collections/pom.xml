@@ -91,7 +91,19 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <dependency>
+            <!-- For handling waiting of asynchronous events -->
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.0.3</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.11.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
