@@ -68,6 +68,8 @@ class BookedTripService(
                 .fromUriString("http://${tripServiceAddress.trim()}/api/trips/${tripId}")
                 .build().toUri()
 
+        log.info("-------------------URI : $uri------------------")
+
         return cb.run(
                 {
                     client.exchange(

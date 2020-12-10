@@ -3,20 +3,33 @@ package com.example.eksamen.usercollections.db
 import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.BookedTripService
 import com.example.eksamen.usercollections.FakeData
+import com.example.eksamen.usercollections.RestAPITest
 import com.example.eksamen.usercollections.model.Collection
+import com.example.eksamen.utils.response.WrappedResponse
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
+import org.springframework.context.ApplicationContextInitializer
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.web.client.RestTemplate
+import wiremock.com.fasterxml.jackson.databind.ObjectMapper
 
 @Profile("UserServiceTest")
 @Primary
@@ -34,6 +47,7 @@ class FakeCardService : BookedTripService(RestTemplate(), Resilience4JCircuitBre
 @ActiveProfiles("UserServiceTest,test")
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ContextConfiguration(initializers = [(UserServiceTest.Companion.Initializer::class)])
 internal class UserServiceTest{
 
     @Autowired
@@ -41,6 +55,46 @@ internal class UserServiceTest{
 
     @Autowired
     private lateinit var userRepository: UserRepository
+
+
+    companion object {
+
+        private lateinit var wiremockServer: WireMockServer
+
+        @BeforeAll
+        @JvmStatic
+        fun initClass() {
+            wiremockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().notifier(ConsoleNotifier(true)))
+            wiremockServer.start()
+
+
+            val tripDto = TripDto(tripId = "t002")
+            val wrapped = WrappedResponse(code = 200, data = tripDto).validated()
+            val json = ObjectMapper().writeValueAsString(wrapped)
+
+            wiremockServer.stubFor(
+                    WireMock.get(WireMock.urlMatching("/api/trips/t002"))
+                            .willReturn(WireMock.aResponse()
+                                    .withStatus(200)
+                                    .withHeader("Content-Type", "application/json; charset=utf-8")
+                                    .withBody(json)))
+        }
+
+
+        @AfterAll
+        @JvmStatic
+        fun tearDown() {
+            wiremockServer.stop()
+        }
+
+        class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+            override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
+                TestPropertyValues.of("tripServiceAddress: localhost:${wiremockServer.port()}")
+                        .applyTo(configurableApplicationContext.environment)
+            }
+        }
+    }
+
 
     @BeforeEach
     fun initTest(){
@@ -65,7 +119,7 @@ internal class UserServiceTest{
     fun testBuyTrip(){
 
         val userId = "foo"
-        val tripId = "t00"
+        val tripId = "t002"
         val nrOfPeople = 3
 
         userService.registerNewUser(userId)
@@ -94,7 +148,7 @@ internal class UserServiceTest{
     fun testCancelTrip(){
 
         val userId = "foo"
-        val tripId = "t01"
+        val tripId = "t002"
         val nrOfPeople = 4
 
         userService.registerNewUser(userId)
@@ -120,7 +174,7 @@ internal class UserServiceTest{
     fun testAlterTrip(){
 
         val userId = "foo"
-        val tripId = "t01"
+        val tripId = "t002"
         val nrOfPeople = 4
 
         userService.registerNewUser(userId)

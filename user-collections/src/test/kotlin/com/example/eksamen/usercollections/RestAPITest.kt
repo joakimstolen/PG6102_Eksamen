@@ -1,5 +1,6 @@
 package com.example.eksamen.usercollections
 
+import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.db.UserRepository
 import com.example.eksamen.usercollections.db.UserService
 import com.example.eksamen.usercollections.dto.BookedTripDto
@@ -57,11 +58,12 @@ internal class RestAPITest{
             wiremockServer.start()
 
 
-            val dto = WrappedResponse(code = 200, data = FakeData.getCollectionDto()).validated()
-            val json = ObjectMapper().writeValueAsString(dto)
+            val tripDto = TripDto(tripId = "t002")
+            val wrapped = WrappedResponse(code = 200, data = tripDto).validated()
+            val json = ObjectMapper().writeValueAsString(wrapped)
 
             wiremockServer.stubFor(
-                    WireMock.get(WireMock.urlMatching("/api/trips/collection_.*"))
+                    WireMock.get(WireMock.urlMatching("/api/trips/t002"))
                             .willReturn(WireMock.aResponse()
                                     .withStatus(200)
                                     .withHeader("Content-Type", "application/json; charset=utf-8")
@@ -125,7 +127,7 @@ internal class RestAPITest{
     fun testBookTrip() {
 
         val userId = "foo"
-        val tripId = "t01"
+        val tripId = "t002"
         val nrOfPeople = 2
 
         given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
@@ -147,7 +149,7 @@ internal class RestAPITest{
     fun testCancelTrip() {
 
         val userId = "foo"
-        val tripIdToBuy = "t01"
+        val tripIdToBuy = "t002"
         val nrOfPeople = 2
 
         given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
@@ -184,7 +186,7 @@ internal class RestAPITest{
     fun testAlterTripPersons() {
 
         val userId = "foo"
-        val tripIdToBuy = "t01"
+        val tripIdToBuy = "t002"
         val nrOfPeople = 5
 
         given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
