@@ -15,10 +15,16 @@ class MOMListener(
     }
 
 
-    @RabbitListener(queues = ["#{queue.name}"])
-    fun receiveFromAMQP(tripId: String) {
+    @RabbitListener(queues = ["#{deletionQueue.name}"])
+    fun receiveDeleteFromAMQP(tripId: String) {
 
         bookedTripService.markAsCanceled(tripId)
-        log.info("Canceled trip via MOM: $tripId")
+        log.info("Canceled/Deleted trip via MOM: $tripId")
+    }
+
+    @RabbitListener(queues = ["#{creationQueue.name}"])
+    fun receiveCreateFromAMQP(tripId: String) {
+
+        log.info("Created trip via MOM: $tripId")
     }
 }

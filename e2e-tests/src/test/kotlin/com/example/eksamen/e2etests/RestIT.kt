@@ -176,7 +176,7 @@ class RestIT {
 
 
     @Test
-    fun testAMQP() {
+    fun testAMQPCreateAndDeleteTrip() {
         Awaitility.await().atMost(60, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofSeconds(10))
                 .ignoreExceptions()
@@ -285,55 +285,4 @@ class RestIT {
 
 
 
-/*
 
-
-Awaitility.await().atMost(10, TimeUnit.SECONDS)
-.pollInterval(Duration.ofSeconds(2))
-.ignoreExceptions()
-.until {
-
-    val userId = "foo_testCreateUser_" + System.currentTimeMillis()
-
-    val userPassword = "123456"
-
-    val userCookie = RestAssured.given().contentType(ContentType.JSON)
-            .body("""
-                                        {
-                                            "userId": "$userId",
-                                            "password": "$userPassword"
-                                        }
-                                        """.trimIndent())
-            .post("/api/auth/signUp")
-            .then()
-            .statusCode(201)
-            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
-            .extract().cookie("SESSION2")
-
-    RestAssured.given().cookie("SESSION2", userCookie)
-            .get("/api/auth/user")
-            .then()
-            .statusCode(200)
-
-
-    RestAssured.given().cookie("SESSION2", userCookie).contentType(ContentType.JSON)
-            .body("""
-                                        {
-                                            "command": "BOOK_TRIP",
-                                            "tripId": "$tripId",
-                                            "nrOfPersons": "3"
-                                        }
-                                        """.trimIndent())
-            .patch("/api/user-collections/$userId")
-            .then()
-            .statusCode(200)
-
-    RestAssured.given().cookie("SESSION2", userCookie)
-            .get("/api/user-collections/$userId")
-            .then()
-            .statusCode(200)
-
-
-
-    true
-}*/

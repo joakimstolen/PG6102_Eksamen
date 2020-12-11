@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -27,7 +28,10 @@ class RestApi(
         private val tripRepository: TripRepository,
         private val tripService: TripService,
         private val rabbit: RabbitTemplate,
-        private val fanout: FanoutExchange
+        @Qualifier("deletionFanout")
+        private val dFanout: FanoutExchange,
+        @Qualifier("creationFanout")
+        private val cFanout: FanoutExchange
 ){
 
     companion object{
@@ -62,7 +66,7 @@ class RestApi(
 
     @ApiOperation("Update default info for new trip")
     @PutMapping(path = ["/{tripId}"])
-    fun updateMovie(@PathVariable("tripId") tripId: String) : ResponseEntity<WrappedResponse<Void>> {
+    fun updateTrip(@PathVariable("tripId") tripId: String) : ResponseEntity<WrappedResponse<Void>> {
         val ok = tripService.registerNewTrip(tripId)
         return if(!ok) RestResponseFactory.userFailure("Trip $tripId already exists")
         else RestResponseFactory.noPayload(201)
@@ -71,13 +75,13 @@ class RestApi(
 
     @ApiOperation("Create new trip")
     @PostMapping(path = ["/{tripId}"])
-    fun createMovie(@PathVariable("tripId") tripId: String) : ResponseEntity<WrappedResponse<Void>> {
+    fun createTrip(@PathVariable("tripId") tripId: String) : ResponseEntity<WrappedResponse<Void>> {
         val ok = tripService.registerNewTrip(tripId)
         return if(!ok){
              RestResponseFactory.userFailure("Trip $tripId already exists")
         } else {
             //AMQP send tripId when created
-            //rabbit.convertAndSend(fanout.name, "", tripId)
+            rabbit.convertAndSend(cFanout.name, "", tripId)
             RestResponseFactory.noPayload(201)
         }
     }
@@ -85,7 +89,7 @@ class RestApi(
 
     @ApiOperation("Return an iterable page of trips, starting highest price")
     @GetMapping
-    fun getAllMovies(
+    fun getAllTripsPagination(
             @ApiParam("title of trip in prev page")
             @RequestParam("keysetId", required = false)
             keysetId: String?,
@@ -112,7 +116,7 @@ class RestApi(
 
     @ApiOperation("Delete trip, with given id")
     @DeleteMapping(path = ["/{tripId}"])
-    fun deleteMovie(@PathVariable("tripId") tripId: String): ResponseEntity<WrappedResponse<Void>> {
+    fun deleteTrip(@PathVariable("tripId") tripId: String): ResponseEntity<WrappedResponse<Void>> {
         val id : String
 
         try {
@@ -126,7 +130,7 @@ class RestApi(
         }
 
 
-        rabbit.convertAndSend(fanout.name, "", id)
+        rabbit.convertAndSend(dFanout.name, "", id)
 
         tripRepository.deleteById(id)
         return ResponseEntity.status(204).build()

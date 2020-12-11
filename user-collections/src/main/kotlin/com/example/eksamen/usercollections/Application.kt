@@ -51,14 +51,15 @@ class Application {
                 .build()
     }
 
-//    @Bean
-//    fun fanout(): FanoutExchange {
-//        return FanoutExchange("user-creation")
-//        //fetches the user fanout
-//    }
 
     @Bean
-    fun fanout(): FanoutExchange {
+    fun deletionFanout(): FanoutExchange {
+        return FanoutExchange("trip-deletion")
+        //fetches the trip fanout
+    }
+
+    @Bean
+    fun creationFanout(): FanoutExchange {
         return FanoutExchange("trip-creation")
         //fetches the trip fanout
     }
@@ -71,19 +72,36 @@ class Application {
     //(i.e., a named queue for all instances of `scores` that is different
     //from the named queue for all instances of `user-collections`).
     //
+
     @Bean
-    fun queue(): Queue {
+    fun deletionQueue(): Queue {
+        //making a queue
+        return Queue("trip-deletion-user-collections")
+    }
+
+
+    @Bean
+    fun creationQueue(): Queue {
         //making a queue
         return Queue("trip-creation-user-collections")
     }
 
 
 
+
+
     @Bean
-    fun binding(fanout: FanoutExchange,
-                queue: Queue): Binding {
-        //binding the queue to the auths fanout
-        return BindingBuilder.bind(queue).to(fanout)
+    fun creationBinding(creationFanout: FanoutExchange,
+                creationQueue: Queue): Binding {
+        //binding the queue to the trips fanout
+        return BindingBuilder.bind(creationQueue).to(creationFanout)
+    }
+
+    @Bean
+    fun deletionBinding(deletionFanout: FanoutExchange,
+                deletionQueue: Queue): Binding {
+        //binding the queue to the trips fanout
+        return BindingBuilder.bind(deletionQueue).to(deletionFanout)
     }
 
 

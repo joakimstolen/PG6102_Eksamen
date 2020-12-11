@@ -70,14 +70,6 @@ class RestAPI(
         val nrOfPersons = dto.nrOfPersons
                 ?: return RestResponseFactory.userFailure("Missing nr of persons")
 
-//        if(dto.command == Command.BOOK_TRIP){
-//            try{
-//                userService.bookTrip(userId, tripId, nrOfPersons)
-//            } catch (e: IllegalArgumentException){
-//                return RestResponseFactory.userFailure(e.message ?: "Failed to buy trip $tripId")
-//            }
-//            return RestResponseFactory.payload(200, PatchResultDto())
-//        }
 
         if(dto.command == Command.CANCEL_TRIP){
             try{
