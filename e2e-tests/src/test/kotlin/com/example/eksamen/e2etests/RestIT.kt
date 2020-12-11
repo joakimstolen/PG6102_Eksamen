@@ -227,67 +227,48 @@ class RestIT {
                             .then()
                             .statusCode(201)
 
+
                     RestAssured.given().cookie("SESSION", cookie)
                             .put("/api/user-collections/$id")
 
+                    //checking the users collection
                     RestAssured.given().cookie("SESSION", cookie)
                             .get("/api/user-collections/$id")
                             .then()
                             .statusCode(200)
 
-
-
+                    //the desired trip to purchase
                     val postData = ObjectMapper().createObjectNode()
                             .put("tripId", tripId)
                             .put("numberOfPeopleBooked", 2)
                             .put("numberOfTrips", 1)
-//
+
+                    //Purchasing the trip that was created (purchasing with ADMIN for simplicity)
                     RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
                             .body(postData)
                             .post("/api/user-collections/$id")
                             .then()
                             .statusCode(201)
 
-
-
-//                    val userId = "foo_testCreateUser_" + System.currentTimeMillis()
-//
-//                    val userPassword = "123456"
-//
-//                    val userCookie = RestAssured.given().contentType(ContentType.JSON)
-//                            .body("""
-//                                        {
-//                                            "userId": "$userId",
-//                                            "password": "$userPassword"
-//                                        }
-//                                        """.trimIndent())
-//                            .post("/api/auth/signUp")
-//                            .then()
-//                            .statusCode(201)
-//                            .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
-//                            .extract().cookie("SESSION2")
-//
-//                    RestAssured.given().cookie("SESSION2", userCookie)
-//                            .get("/api/auth/user")
-//                            .then()
-//                            .statusCode(200)
-
-
-
-
                     //Deleting a trip with the ADMIN user
-//                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
-//                            .delete("/api/trips/$tripId")
-//                            .then()
-//                            .statusCode(204)
+                    RestAssured.given().cookie("SESSION", cookie).contentType(ContentType.JSON)
+                            .delete("/api/trips/$tripId")
+                            .then()
+                            .statusCode(204)
 
-//
-//
-//
-//                    RestAssured.given().cookie("SESSION", cookie)
-//                            .patch("/api/user-collections/newTrip")
-//                            .then()
-//                            .statusCode(200)
+                    Awaitility.await().atMost(10, TimeUnit.SECONDS)
+                            .pollInterval(Duration.ofSeconds(2))
+                            .ignoreExceptions()
+                            .until {
+                                RestAssured.given().cookie("SESSION", cookie)
+                                        .get("/api/user-collections/$id")
+                                        .then()
+                                        .statusCode(200)
+                                        .body(CoreMatchers.containsString("CANCELED"))
+
+                                true
+                            }
+
 
                     true
                 }

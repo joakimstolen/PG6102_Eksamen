@@ -77,7 +77,7 @@ class RestApi(
              RestResponseFactory.userFailure("Trip $tripId already exists")
         } else {
             //AMQP send tripId when created
-            rabbit.convertAndSend(fanout.name, "", tripId)
+            //rabbit.convertAndSend(fanout.name, "", tripId)
             RestResponseFactory.noPayload(201)
         }
     }
@@ -125,7 +125,9 @@ class RestApi(
             return ResponseEntity.status(404).build()
         }
 
-        rabbit.convertAndSend(fanout.name, "", tripId)
+
+        rabbit.convertAndSend(fanout.name, "", id)
+
         tripRepository.deleteById(id)
         return ResponseEntity.status(204).build()
 

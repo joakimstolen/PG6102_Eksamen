@@ -37,29 +37,29 @@ class Application {
     }
 
     @Bean
-    fun tripFanout(): FanoutExchange {
+    fun fanout(): FanoutExchange {
         return FanoutExchange("trip-creation")
     }
 
-    @Bean
-    fun fanout(): FanoutExchange {
-        return FanoutExchange("user-creation")
-    }
-
-    @Bean
-    fun queue(): Queue {
-        return Queue("user-creation-trips")
-    }
-
-    @Bean
-    fun binding(fanout: FanoutExchange,
-                queue: Queue): Binding {
-        /*
-            This will create on RabbitMQ a queue that is bound
-            to the given fanout.
-         */
-        return BindingBuilder.bind(queue).to(fanout)
-    }
+//    @Bean
+//    fun fanout(): FanoutExchange {
+//        return FanoutExchange("user-creation")
+//    }
+//
+//    @Bean
+//    fun queue(): Queue {
+//        return Queue("user-creation-trips")
+//    }
+//
+//    @Bean
+//    fun binding(fanout: FanoutExchange,
+//                queue: Queue): Binding {
+//        /*
+//            This will create on RabbitMQ a queue that is bound
+//            to the given fanout.
+//         */
+//        return BindingBuilder.bind(queue).to(fanout)
+//    }
 }
 
 

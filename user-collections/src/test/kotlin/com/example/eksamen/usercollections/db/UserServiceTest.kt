@@ -1,6 +1,7 @@
 package com.example.eksamen.usercollections.db
 
 import com.example.eksamen.trip.dto.TripDto
+import com.example.eksamen.usercollections.BookedTripRepository
 import com.example.eksamen.usercollections.BookedTripService
 import com.example.eksamen.usercollections.FakeData
 import com.example.eksamen.usercollections.RestAPITest
@@ -31,17 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.web.client.RestTemplate
 import wiremock.com.fasterxml.jackson.databind.ObjectMapper
 
-@Profile("UserServiceTest")
-@Primary
-@Service
-class FakeCardService : BookedTripService(RestTemplate(), Resilience4JCircuitBreakerFactory()){
 
-    override fun fetchData(tripId: String): TripDto? {
-        val dto = FakeData.getCollectionDto()
-        super.collection = Collection(dto)
-        return null
-    }
-}
 
 
 @ActiveProfiles("UserServiceTest,test")

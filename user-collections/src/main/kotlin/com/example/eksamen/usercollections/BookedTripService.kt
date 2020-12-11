@@ -11,16 +11,25 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.data.repository.CrudRepository
 import org.springframework.http.HttpMethod
+import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import javax.annotation.PostConstruct
 
+@Repository
+interface BookedTripRepository : CrudRepository<BookedTrip, Long>{
+
+    fun findBookingByTripId(tripId: String): List<BookedTrip>
+}
+
 @Service
 class BookedTripService(
         private val client: RestTemplate,
-        private val circuitBreakerFactory: Resilience4JCircuitBreakerFactory
+        private val circuitBreakerFactory: Resilience4JCircuitBreakerFactory,
+        private val bookedTripRepository: BookedTripRepository
 ) {
 
     companion object{
@@ -67,6 +76,15 @@ class BookedTripService(
                     null
                 }
         )
+
+    }
+
+
+    fun markAsCanceled( tripId: String){
+
+        val trip = bookedTripRepository.findBookingByTripId(tripId)
+        trip.forEach { it.tripId="CANCELED" }
+        bookedTripRepository.saveAll(trip)
 
     }
 

@@ -113,15 +113,7 @@ class UserService(
 
     }
 
-    fun markAsCanceled(userId: String, tripId: String){
 
-        val user = userRepository.lockedFind(userId)!!
-        val copy = user.ownedBookedTrips.find { it.tripId == tripId }
-        if (copy != null) {
-            copy.tripId = "CANCELED"
-        }
-
-    }
 
 
 

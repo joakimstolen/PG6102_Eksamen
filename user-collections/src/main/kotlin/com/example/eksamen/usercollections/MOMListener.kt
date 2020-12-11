@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class MOMListener(
-        private val userService: UserService
+        private val bookedTripService: BookedTripService
 ) {
 
     companion object{
@@ -16,9 +16,9 @@ class MOMListener(
 
 
     @RabbitListener(queues = ["#{queue.name}"])
-    fun receiveFromAMQP(userId: String, tripId: String) {
+    fun receiveFromAMQP(tripId: String) {
 
-        userService.markAsCanceled(userId, tripId)
-        log.info("Canceled trip via MOM: $userId")
+        bookedTripService.markAsCanceled(tripId)
+        log.info("Canceled trip via MOM: $tripId")
     }
 }
