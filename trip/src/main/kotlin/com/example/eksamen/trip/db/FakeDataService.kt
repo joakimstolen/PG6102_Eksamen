@@ -31,6 +31,17 @@ class FakeDataService (
         val trip14 = TripEntity("t014", "Helsinki", 10, 4250)
         val trip15 = TripEntity("t015", "Warsaw", 7, 1250)
         val trip16 = TripEntity("t016", "Riga", 2, 850)
+        val trip17 = TripEntity("t017", "Beijing", 2, 4500)
+        val trip18 = TripEntity("t018", "Tokyo", 9, 7800)
+        val trip19 = TripEntity("t019", "Bangkok", 10, 6400)
+        val trip20 = TripEntity("t020", "Los Angeles", 12, 8300)
+        val trip21 = TripEntity("t021", "Washington DC", 5, 3900)
+        val trip22 = TripEntity("t022", "Amsterdam", 2, 1200)
+        val trip23 = TripEntity("t023", "Minsk", 8, 2000)
+        val trip24 = TripEntity("t024", "Moscow", 8, 4100)
+        val trip25 = TripEntity("t025", "Manchester", 2, 1200)
+        val trip26 = TripEntity("t026", "New Dehli", 13, 7800)
+        val trip27 = TripEntity("t027", "Mallorca", 4, 1650)
 
         if(tripRepository.count().toInt() == 0){
             tripRepository.save(trip1)
@@ -49,6 +60,17 @@ class FakeDataService (
             tripRepository.save(trip14)
             tripRepository.save(trip15)
             tripRepository.save(trip16)
+            tripRepository.save(trip17)
+            tripRepository.save(trip18)
+            tripRepository.save(trip19)
+            tripRepository.save(trip20)
+            tripRepository.save(trip21)
+            tripRepository.save(trip22)
+            tripRepository.save(trip23)
+            tripRepository.save(trip24)
+            tripRepository.save(trip25)
+            tripRepository.save(trip26)
+            tripRepository.save(trip27)
         }
 
     }
