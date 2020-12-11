@@ -64,6 +64,12 @@ class Application {
         //fetches the trip fanout
     }
 
+    @Bean
+    fun authCreationFanout(): FanoutExchange {
+        return FanoutExchange("auth-creation")
+        //fetches the auth fanout
+    }
+
 
     //although it is a broadcast, only one instance of `scores` and
     //only one instance of `user-collections` should receive and process such
@@ -87,6 +93,13 @@ class Application {
     }
 
 
+    @Bean
+    fun authCreationQueue(): Queue {
+        //making a queue
+        return Queue("auth-creation-user-collections")
+    }
+
+
 
 
 
@@ -102,6 +115,13 @@ class Application {
                 deletionQueue: Queue): Binding {
         //binding the queue to the trips fanout
         return BindingBuilder.bind(deletionQueue).to(deletionFanout)
+    }
+
+    @Bean
+    fun authCreationBinding(authCreationFanout: FanoutExchange,
+                            authCreationQueue: Queue): Binding {
+        //binding the queue to the auth fanout
+        return BindingBuilder.bind(authCreationQueue).to(authCreationFanout)
     }
 
 

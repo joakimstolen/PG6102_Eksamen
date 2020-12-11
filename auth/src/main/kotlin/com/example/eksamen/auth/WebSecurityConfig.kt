@@ -55,6 +55,7 @@ class WebSecurityConfig(
                     can match the same URLs
                  */
                 .authorizeRequests()
+                .antMatchers("/swagger*/**", "/v3/api-docs", "/actuator/**").permitAll()
                 .antMatchers("/api/auth/user").authenticated()
                 .antMatchers("/api/auth/signUp").permitAll()
                 .antMatchers("/api/auth/login").permitAll()

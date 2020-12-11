@@ -5,8 +5,5 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     database: h2
-    show-sql: true
-  # Discovery
-  cloud:
-    consul:
-      enabled: false
+  session:
+    store-type: none

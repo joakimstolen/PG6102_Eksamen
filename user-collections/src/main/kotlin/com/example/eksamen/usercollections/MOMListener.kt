@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class MOMListener(
-        private val bookedTripService: BookedTripService
+        private val bookedTripService: BookedTripService,
+        private val userService: UserService
 ) {
 
     companion object{
@@ -26,5 +27,14 @@ class MOMListener(
     fun receiveCreateFromAMQP(tripId: String) {
 
         log.info("Created trip via MOM: $tripId")
+    }
+
+    @RabbitListener(queues = ["#{authCreationQueue.name}"])
+    fun receiveFromAMQP(userId: String) {
+
+        val ok = userService.registerNewUser(userId)
+        if(ok){
+            log.info("Registered new user via MOM: $userId")
+        }
     }
 }

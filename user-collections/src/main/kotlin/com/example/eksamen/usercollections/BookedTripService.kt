@@ -48,9 +48,6 @@ class BookedTripService(
         cb = circuitBreakerFactory.create("circuitBreakerToTrips")
     }
 
-
-
-
     fun fetchData(tripId: String): TripDto?{
 
         val uri = UriComponentsBuilder
