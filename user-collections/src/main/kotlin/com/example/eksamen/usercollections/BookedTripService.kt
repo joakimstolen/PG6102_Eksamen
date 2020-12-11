@@ -1,10 +1,7 @@
 package com.example.eksamen.usercollections
 
-import com.example.eksamen.trip.dto.TripCollectionDto
 import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.db.BookedTrip
-import com.example.eksamen.usercollections.model.Collection
-import com.example.eksamen.usercollections.model.Trip
 import com.example.eksamen.utils.response.WrappedResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -36,7 +33,7 @@ class BookedTripService(
         private val log = LoggerFactory.getLogger(BookedTripService::class.java)
     }
 
-    protected var collection: Collection? = null
+
 
     @Value("\${tripServiceAddress}")
     private lateinit var tripServiceAddress: String
@@ -56,7 +53,6 @@ class BookedTripService(
 
     fun fetchData(tripId: String): TripDto?{
 
-        //val version = "v1_000"
         val uri = UriComponentsBuilder
                 .fromUriString("http://${tripServiceAddress.trim()}/api/trips/${tripId}")
                 .build().toUri()

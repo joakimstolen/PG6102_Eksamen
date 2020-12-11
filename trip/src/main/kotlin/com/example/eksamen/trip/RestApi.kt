@@ -1,7 +1,6 @@
 package com.example.eksamen.trip
 
 import com.example.eksamen.trip.db.TripEntity
-import com.example.eksamen.trip.dto.TripCollectionDto
 import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.trip.service.TripRepository
 import com.example.eksamen.trip.service.TripService
