@@ -122,18 +122,18 @@ class RestApi(
         try {
             id = tripId
         } catch (e: Exception){
-            return ResponseEntity.status(400).build()
+            return RestResponseFactory.noPayload(400)
         }
 
         if (!tripRepository.existsById(id)){
-            return ResponseEntity.status(404).build()
+            return RestResponseFactory.userFailure("User exists",404)
         }
 
 
         rabbit.convertAndSend(dFanout.name, "", id)
 
         tripRepository.deleteById(id)
-        return ResponseEntity.status(204).build()
+        return RestResponseFactory.noPayload(204)
 
     }
 
