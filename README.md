@@ -9,7 +9,7 @@ This project is the exam of PG6102 Enterprise Programming 2. It is a microservic
 
 ## How to run: 
 1. Install application:
-    * `mvn clean install` (to run with unit tests)
+    * `mvn clean install` (to run with unit tests, E2E-tests will also run)
     * `mvn clean install -DskipTests` (to run without tests)
 2. Run `docker-compose build` to build docker-compose
 3. Run `docker-compose up` to start docker-compose
@@ -17,7 +17,7 @@ This project is the exam of PG6102 Enterprise Programming 2. It is a microservic
 
 ### E2E-tests
 To run E2E tests you can use `mvn clean verify` or run the file RestIT manually.
-Also added AMQP E2E-test. The name of this test is: `testAMQPCreateAndDeleteTrip`
+Also added AMQP E2E-test. The name of this test is: `testAMQPCreateAndDeleteTrip`. If you want to disable E2E-tests running when running mvn, uncomment the @Disabled annotation in RestIT test-class.
 
 ### Individual modules
 To run seperat modules in the microservice application, you can run LocalApplicationRunner in modules: trip, user-collection, auth.
@@ -84,7 +84,7 @@ Did manage to do R1, R2, R3, R4 & T1, T2, T3
 - [x] All requirements in R1 must be satisfied for this API.
 - [x] Only admins should be able to modifications in the API of T1.
 
-#### T2:
+#### T3:
 - [x] Every time a new trip is added or deleted in the API for T1, this latter should do a broadcast with AMQP. Then, the API in T2 should listen to such events. Reservations for deleted trips should be marked as “cancelled”.
 
 
