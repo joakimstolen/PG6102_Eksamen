@@ -1,5 +1,5 @@
 package com.example.eksamen.auth
-
+//https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/auth/src/test/kotlin/org/tsdes/advanced/exercises/cardgame/auth/SecurityTest.kt
 import com.example.eksamen.auth.db.UserRepository
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
@@ -135,8 +135,8 @@ class SecurityTest {
                 .get("/user")
                 .then()
                 .statusCode(200)
-                .body("name", CoreMatchers.equalTo(name))
-                .body("roles", Matchers.contains("ROLE_USER"))
+                .body("data.name", CoreMatchers.equalTo(name))
+                .body("data.roles", Matchers.contains("ROLE_USER"))
 
 
 

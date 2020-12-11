@@ -1,5 +1,5 @@
 package com.example.eksamen.utils.response
-
+//https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/rest/rest-dto/src/main/kotlin/org/tsdes/advanced/rest/dto/PageDto.kt
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import org.jetbrains.annotations.NotNull

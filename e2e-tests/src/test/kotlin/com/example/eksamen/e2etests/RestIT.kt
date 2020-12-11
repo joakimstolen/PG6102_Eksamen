@@ -1,5 +1,5 @@
 package com.example.eksamen.e2etests
-
+//https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-09/e2e-tests/src/test/kotlin/org/tsdes/advanced/exercises/cardgame/e2etests/RestIT.kt
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.restassured.RestAssured

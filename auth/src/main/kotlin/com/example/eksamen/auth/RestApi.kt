@@ -1,6 +1,8 @@
 package com.example.eksamen.auth
-
+//https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/auth/src/main/kotlin/org/tsdes/advanced/exercises/cardgame/auth/RestApi.kt
 import com.example.eksamen.auth.db.UserService
+import com.example.eksamen.utils.response.RestResponseFactory
+import com.example.eksamen.utils.response.WrappedResponse
 import io.swagger.annotations.ApiOperation
 import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 import java.security.Principal
 
 @RestController
@@ -31,11 +34,11 @@ class RestApi(
 
     @ApiOperation("get info on signed in user")
     @RequestMapping("/user")
-    fun user(user: Principal): ResponseEntity<Map<String, Any>> {
+    fun user(user: Principal): ResponseEntity<WrappedResponse<Map<String, Any>>> {
         val map = mutableMapOf<String,Any>()
         map["name"] = user.name
         map["roles"] = AuthorityUtils.authorityListToSet((user as Authentication).authorities)
-        return ResponseEntity.ok(map)
+        return RestResponseFactory.payload(200, map)
     }
 
     @ApiOperation("Create a new user")
@@ -43,7 +46,7 @@ class RestApi(
             path = ["/signUp"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun signUp(@RequestBody dto: AuthDto)
-            : ResponseEntity<Void> {
+            : ResponseEntity<WrappedResponse<Void>> {
 
         val userId : String = dto.userId!!
         val password : String = dto.password!!
@@ -51,7 +54,7 @@ class RestApi(
         val registered = service.createUser(userId, password, setOf("USER"))
 
         if (!registered) {
-            return ResponseEntity.status(400).build()
+            return RestResponseFactory.userFailure(message = "Username already exists")
         }
 
         val userDetails = userDetailsService.loadUserByUsername(userId)
@@ -65,14 +68,14 @@ class RestApi(
 
         rabbit.convertAndSend(fanout.name, "", userId)
 
-        return ResponseEntity.status(201).build()
+        return RestResponseFactory.created(URI.create("/api/auth/user"))
     }
 
     @ApiOperation("Login a user")
     @PostMapping(path = ["/login"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun login(@RequestBody dto: AuthDto)
-            : ResponseEntity<Void> {
+            : ResponseEntity<WrappedResponse<Void>> {
 
         val userId : String = dto.userId!!
         val password : String = dto.password!!
@@ -80,7 +83,7 @@ class RestApi(
         val userDetails = try{
             userDetailsService.loadUserByUsername(userId)
         } catch (e: UsernameNotFoundException){
-            return ResponseEntity.status(400).build()
+            return RestResponseFactory.userFailure("Username not found", 400)
         }
 
         val token = UsernamePasswordAuthenticationToken(userDetails, password, userDetails.authorities)
@@ -89,10 +92,11 @@ class RestApi(
 
         if (token.isAuthenticated) {
             SecurityContextHolder.getContext().authentication = token
-            return ResponseEntity.status(204).build()
+            return RestResponseFactory.noPayload(204)
+
         }
 
-        return ResponseEntity.status(400).build()
+        return RestResponseFactory.userFailure("Authentication failed", 400)
     }
 
 }

@@ -1,5 +1,5 @@
 //https://www.journaldev.com/21429/spring-component
-//
+//https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/CommandLineRunner.html
 
 package com.example.eksamen.auth
 
@@ -14,6 +14,7 @@ class InitUserLoader (
         private val userService: UserService
 ) : CommandLineRunner{
 
+    //creating admin user initialized when SpringBoot runs
     override fun run(vararg args: String?) {
         createAdmin()
     }

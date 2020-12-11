@@ -15,3 +15,6 @@ create table user_data (
     primary key (user_id));
 
 alter table booked_trip add constraint FK81d7uk3xgfyurglogki3o6crg foreign key (user_user_id) references user_data;
+
+
+--https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/user-collections/src/main/resources/db/migration/V1.0__createDB.sql

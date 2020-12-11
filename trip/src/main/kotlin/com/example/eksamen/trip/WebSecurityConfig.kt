@@ -27,7 +27,6 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
                 .antMatchers("/swagger*/**", "/v3/api-docs", "/actuator/**").permitAll()
                 //everyone can see the list of trips
-                //.antMatchers("/api/trips").permitAll()
                 .antMatchers("/api/trips/collection_*").permitAll()
 
                 //only admins can do modifying of trips
@@ -37,7 +36,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.PUT, "/api/trips*/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/trips*/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/api/trips*/**").hasRole("ADMIN")
-                //.antMatchers("/trips*/**").hasRole("ADMIN")
+
                 //
 
                 //

@@ -14,3 +14,6 @@ spring:
     store-type: none
   main:
     allow-bean-definition-overriding: true
+
+
+    #https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-08/scores/src/test/resources/application-test.yml

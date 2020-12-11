@@ -1,5 +1,5 @@
 package com.example.eksamen.usercollections
-
+//https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/user-collections/src/test/kotlin/org/tsdes/advanced/exercises/cardgame/usercollections/RestAPITest.kt
 import com.example.eksamen.trip.dto.TripDto
 import com.example.eksamen.usercollections.db.UserRepository
 import com.example.eksamen.usercollections.db.UserService

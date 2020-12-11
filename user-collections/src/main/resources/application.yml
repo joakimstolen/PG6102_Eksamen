@@ -29,3 +29,6 @@ spring:
         instanceId: ${spring.application.name}:${random.value}
 
 tripServiceAddress: "trips-service:8080"
+
+
+#https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/user-collections/src/main/resources/application.yml

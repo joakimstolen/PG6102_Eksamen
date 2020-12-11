@@ -17,3 +17,8 @@ spring:
     database: "postgresql"
     hibernate:
       ddl-auto: validate
+
+
+
+
+#https://github:com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/exercise-solutions/card-game/part-10/auth/src/main/resources/application:yml:
