@@ -1,6 +1,7 @@
 package com.example.eksamen.auth
 
 import com.example.eksamen.auth.db.UserService
+import io.swagger.annotations.ApiOperation
 import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.MediaType
@@ -28,6 +29,7 @@ class RestApi(
         private val fanout: FanoutExchange
 ) {
 
+    @ApiOperation("get info on signed in user")
     @RequestMapping("/user")
     fun user(user: Principal): ResponseEntity<Map<String, Any>> {
         val map = mutableMapOf<String,Any>()
@@ -36,6 +38,7 @@ class RestApi(
         return ResponseEntity.ok(map)
     }
 
+    @ApiOperation("Create a new user")
     @PostMapping(
             path = ["/signUp"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
@@ -65,6 +68,7 @@ class RestApi(
         return ResponseEntity.status(201).build()
     }
 
+    @ApiOperation("Login a user")
     @PostMapping(path = ["/login"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
     fun login(@RequestBody dto: AuthDto)

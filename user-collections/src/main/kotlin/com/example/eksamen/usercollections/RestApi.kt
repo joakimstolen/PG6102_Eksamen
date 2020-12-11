@@ -122,22 +122,7 @@ class RestAPI(
 
         return RestResponseFactory.payload(201, BookedTripDto())
 
-//        val tripId = dto.tripId
-//                ?: return RestResponseFactory.userFailure("Missing trip id")
-//
-//        val nrOfPersons = dto.numberOfPeopleBooked
-//                ?: return RestResponseFactory.userFailure("Missing nr of persons")
-//
-//        val numberOfTrips = dto.numberOfTrips
-//                ?: return RestResponseFactory.userFailure("Missing nr of trips")
 
-//
-//            try{
-//                userService.bookTrip(userId, tripId, nrOfPersons)
-//            } catch (e: IllegalArgumentException){
-//                return RestResponseFactory.userFailure(e.message ?: "Failed to buy trip $tripId")
-//            }
-//            return ResponseEntity.status(201).build()
 
     }
 }

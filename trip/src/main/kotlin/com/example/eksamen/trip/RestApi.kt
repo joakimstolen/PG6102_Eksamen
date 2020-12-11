@@ -41,9 +41,9 @@ class RestApi(
 
     @ApiOperation("Return info on all trips")
     @GetMapping(path = ["/collection_$LATEST"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getLatest() : ResponseEntity<WrappedResponse<TripCollectionDto>> {
+    fun getLatest() : ResponseEntity<WrappedResponse<Iterable<TripEntity>>> {
 
-        val collection = TripCollection.get()
+        val collection = tripRepository.findAll()
 
         return ResponseEntity
                 .status(200)
